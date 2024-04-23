@@ -8,59 +8,84 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Get all articles
+    public function getAllArticles()
     {
-        //
+        $articles = Article::all();
+        $articlesCount = $articles->count();
+
+        return response()->json([
+            'message' => 'Articles retrieved successfully',
+            'articlesCount' => $articlesCount,
+            'articles' => $articles
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Get article by id
+    public function getArticleById($id)
     {
-        //
+        $article = Article::find($id);
+
+        if (!$article) {
+            return response()->json([
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Article retrieved successfully',
+            'article' => $article
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // Create article
+    public function createArticle(Request $request)
     {
-        //
+        $article = Article::create($request->all());
+
+        return response()->json([
+            'message' => 'Article created successfully',
+            'article' => $article
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Article $article)
+    // Update article
+    public function updateArticle(Request $request, $id)
     {
-        //
+        $article = Article::find($id);
+
+        if (!$article) {
+            return response()->json([
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        // Only update the fields that are present in the request body and ignore the rest
+        $article->fill($request->all());
+        $article->save();
+
+        return response()->json([
+            'message' => 'Article updated successfully',
+            'article' => $article
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Article $article)
+    // Delete article
+    public function deleteArticle($id)
     {
-        //
-    }
+        $article = Article::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Article $article)
-    {
-        //
-    }
+        if (!$article) {
+            return response()->json([
+                'message' => 'Article not found'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Article $article)
-    {
-        //
+        $article->delete();
+
+        return response()->json([
+            'message' => 'Article deleted successfully'
+        ]);
     }
 }
+

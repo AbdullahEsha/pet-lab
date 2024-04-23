@@ -8,59 +8,82 @@ use Illuminate\Http\Request;
 
 class FolderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Get all folders
+    public function getAllFolders()
     {
-        //
+        $folders = Folder::all();
+        $foldersCount = $folders->count();
+
+        return response()->json([
+            'message' => 'Folders retrieved successfully',
+            'foldersCount' => $foldersCount,
+            'folders' => $folders
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Get folder by id
+    public function getFolderById($id)
     {
-        //
+        $folder = Folder::find($id);
+
+        if (!$folder) {
+            return response()->json([
+                'message' => 'Folder not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Folder retrieved successfully',
+            'folder' => $folder
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // Create folder
+    public function createFolder(Request $request)
     {
-        //
+        $folder = Folder::create($request->all());
+
+        return response()->json([
+            'message' => 'Folder created successfully',
+            'folder' => $folder
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Folder $folder)
+    // Update folder
+    public function updateFolder(Request $request, $id)
     {
-        //
+        $folder = Folder::find($id);
+
+        if (!$folder) {
+            return response()->json([
+                'message' => 'Folder not found'
+            ], 404);
+        }
+
+        $folder->fill($request->all());
+        $folder->save();
+
+        return response()->json([
+            'message' => 'Folder updated successfully',
+            'folder' => $folder
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Folder $folder)
+    // Delete folder
+    public function deleteFolder($id)
     {
-        //
-    }
+        $folder = Folder::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Folder $folder)
-    {
-        //
-    }
+        if (!$folder) {
+            return response()->json([
+                'message' => 'Folder not found'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Folder $folder)
-    {
-        //
+        $folder->delete();
+
+        return response()->json([
+            'message' => 'Folder deleted successfully'
+        ]);
     }
 }

@@ -8,59 +8,83 @@ use Illuminate\Http\Request;
 
 class AnnouncementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // get all announcements
     public function index()
     {
-        //
+        $announcements = Announcement::all();
+        $announcementsCount = $announcements->count();
+        
+        return response()->json([
+            'message' => 'Announcements retrieved successfully',
+            'count' => $announcementsCount,
+            'announcements' => $announcements
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // get announcement by id
+    public function getAnnouncementById($id)
     {
-        //
+        $announcement = Announcement::find($id);
+
+        if (!$announcement) {
+            return response()->json([
+                'message' => 'Announcement not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Announcement retrieved successfully',
+            'announcement' => $announcement
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // create announcement
+    public function createAnnouncement(Request $request)
     {
-        //
+        $announcement = Announcement::create($request->all());
+
+        return response()->json([
+            'message' => 'Announcement created successfully',
+            'announcement' => $announcement
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Announcement $announcement)
+    // update announcement
+    public function updateAnnouncement(Request $request, $id)
     {
-        //
+        $announcement = Announcement::find($id);
+
+        if (!$announcement) {
+            return response()->json([
+                'message' => 'Announcement not found'
+            ], 404);
+        }
+
+        // only update the fields that are present in the request body and ignore the rest
+        $announcement->fill($request->all());
+        $announcement->save();
+
+        return response()->json([
+            'message' => 'Announcement updated successfully',
+            'announcement' => $announcement
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Announcement $announcement)
+    // delete announcement
+    public function deleteAnnouncement($id)
     {
-        //
-    }
+        $announcement = Announcement::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Announcement $announcement)
-    {
-        //
-    }
+        if (!$announcement) {
+            return response()->json([
+                'message' => 'Announcement not found'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Announcement $announcement)
-    {
-        //
+        $announcement->delete();
+
+        return response()->json([
+            'message' => 'Announcement deleted successfully'
+        ]);
     }
 }

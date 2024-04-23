@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Management extends Model
 {
     use HasFactory;
+    
      protected $fillable = [
         'postion',
         'emp_name',

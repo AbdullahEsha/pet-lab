@@ -24,7 +24,8 @@ class CredentialController extends Controller
             'labId' => 'nullable|string',
             'subExpDate' => 'nullable|date',
             'isApproved' => 'nullable|string',
-            'detailsId' => 'nullable|integer'
+            'detailsId' => 'nullable|integer',
+            'token' => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -45,7 +46,8 @@ class CredentialController extends Controller
             'labId' => $request->labId,
             'subExpDate' => $request->subExpDate,
             'isApproved' => $request->isApproved,
-            'detailsId' => $request->detailsId
+            'detailsId' => $request->detailsId,
+            'token' => null
         ]);
 
         return response()->json([
@@ -66,8 +68,10 @@ class CredentialController extends Controller
         }
 
         $user = $request->user();
-        // $request->user()->createToken($request->token_name);
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        $user->token = $token;
+        $user->save();
 
         return response()->json([
             'message' => 'User logged in successfully',

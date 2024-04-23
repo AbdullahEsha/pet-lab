@@ -8,59 +8,89 @@ use Illuminate\Http\Request;
 
 class GalleryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    //Schema::create('galleries', function (Blueprint $table) {
+    //    $table->id();
+    //    $table->string('title');
+    //    $table->json('image');
+    //    $table->string('folder');
+    //    $table->timestamps();
+    //});
+    
+    // get all galleries
+    public function getAllGalleries()
     {
-        //
+        $galleries = Gallery::all();
+        $galleriesCount = $galleries->count();
+        
+        return response()->json([
+            'message' => 'Galleries retrieved successfully',
+            'count' => $galleriesCount,
+            'galleries' => $galleries
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // get gallery by id
+    public function getGalleryById($id)
     {
-        //
+        $gallery = Gallery::find($id);
+
+        if (!$gallery) {
+            return response()->json([
+                'message' => 'Gallery not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Gallery retrieved successfully',
+            'gallery' => $gallery
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // create gallery
+    public function createGallery(Request $request)
     {
-        //
+        $gallery = Gallery::create($request->all());
+
+        return response()->json([
+            'message' => 'Gallery created successfully',
+            'gallery' => $gallery
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Gallery $gallery)
+    // update gallery by id
+    public function updateGallery(Request $request, $id)
     {
-        //
+        $gallery = Gallery::find($id);
+
+        if (!$gallery) {
+            return response()->json([
+                'message' => 'Gallery not found'
+            ], 404);
+        }
+
+        $gallery->update($request->all());
+
+        return response()->json([
+            'message' => 'Gallery updated successfully',
+            'gallery' => $gallery
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Gallery $gallery)
+    // delete gallery by id
+    public function deleteGallery($id)
     {
-        //
-    }
+        $gallery = Gallery::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Gallery $gallery)
-    {
-        //
-    }
+        if (!$gallery) {
+            return response()->json([
+                'message' => 'Gallery not found'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Gallery $gallery)
-    {
-        //
+        $gallery->delete();
+
+        return response()->json([
+            'message' => 'Gallery deleted successfully'
+        ]);
     }
 }

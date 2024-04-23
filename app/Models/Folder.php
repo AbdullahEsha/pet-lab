@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Folder extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
         'title',
     ];
