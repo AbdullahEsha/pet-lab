@@ -2,17 +2,20 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Middleware\AuthAsAdmin;
 
-Route::post('/register', [AuthController::class, 'register']);
+use App\Http\Controllers\CredentialController;
+use App\Http\Controllers\UserController;
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [CredentialController::class, 'register']);
 
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::post('/login', [CredentialController::class, 'login']);
 
-// authenticatedUser funtion to get the authenticated user
-Route::middleware('auth:sanctum')->get('/authenticatedUser', [AuthController::class, 'authenticatedUser']);
+Route::post('/logout', [CredentialController::class, 'logout']);
 
-
-
-
+// wrappe the routes in a middleware group
+Route::middleware([AuthAsAdmin::class])->group(function () {
+    Route::get('/users', [UserController::class, 'getAllUsers']);
+    Route::get('/users/{id}', [UserController::class, 'getUserById']);
+    Route::put('/users/{id}', [UserController::class, 'updateUser']);
+});

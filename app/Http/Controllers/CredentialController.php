@@ -8,14 +8,22 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class AuthController extends Controller
+class CredentialController extends Controller
 {
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8'
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string',
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'city' => 'required|string',
+            'role' => 'required|string',
+            'labId' => 'nullable|string',
+            'subExpDate' => 'nullable|date',
+            'isApproved' => 'nullable|string',
+            'detailsId' => 'nullable|integer'
         ]);
 
         if ($validator->fails()) {
@@ -27,13 +35,21 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'city' => $request->city,
+            'role' => $request->role,
+            'labId' => $request->labId,
+            'subExpDate' => $request->subExpDate,
+            'isApproved' => $request->isApproved,
+            'detailsId' => $request->detailsId
         ]);
 
         return response()->json([
             'message' => 'User created successfully',
             'user' => $user
-        ], 201);
+        ]);
     }
 
     public function login(Request $request)
@@ -56,22 +72,20 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
-
         $token = $user->createToken('token')->plainTextToken;
-    
+
         return response()->json([
             'message' => 'Login successful',
-            'user' => $user,
             'token' => $token
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logged out successfully'
+            'message' => 'Logout successful'
         ]);
     }
 }
