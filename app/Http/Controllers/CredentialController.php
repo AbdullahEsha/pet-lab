@@ -15,6 +15,7 @@ class CredentialController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
+            'image' => 'required|string',
             'password' => 'required|string',
             'phone' => 'required|string',
             'address' => 'required|string',
@@ -35,6 +36,7 @@ class CredentialController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'image' => $request->image,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
             'address' => $request->address,
@@ -76,6 +78,7 @@ class CredentialController extends Controller
 
         return response()->json([
             'message' => 'Login successful',
+            'user' => $user,
             'token' => $token
         ]);
     }
