@@ -31,4 +31,22 @@ class User extends Authenticatable
         'isApproved',
         'detailsId',
     ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array<int, string>
+     */
+    protected $casts = [
+        'subExpDate' => 'datetime',
+    ];
 }
