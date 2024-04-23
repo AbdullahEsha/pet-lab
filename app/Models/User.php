@@ -30,6 +30,7 @@ class User extends Authenticatable
         'subExpDate',
         'isApproved',
         'detailsId',
+        'token',
     ];
 
     /**
@@ -39,6 +40,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     /**
@@ -47,6 +49,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $casts = [
+        'email_verified_at' => 'datetime',
         'subExpDate' => 'datetime',
     ];
 }
