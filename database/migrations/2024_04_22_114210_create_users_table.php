@@ -25,6 +25,7 @@ return new class extends Migration
             $table->timestamp('subExpDate')->nullable();
             $table->string('isApproved')->default('pending');
             $table->integer('detailsId')->nullable();
+            $table->string('token')->nullable();
             $table->timestamps();
         });
 
