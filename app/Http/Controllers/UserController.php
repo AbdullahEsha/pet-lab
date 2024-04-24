@@ -48,9 +48,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        // only update the fields that are present in the request body and ignore the rest
-        $user->fill($request->all());
-        $user->save();
+        $user->update($request->all());
 
         return response()->json([
             'message' => 'User updated successfully',

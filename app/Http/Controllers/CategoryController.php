@@ -8,59 +8,82 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // Get all categories
+    public function getAllCategories()
     {
-        //
+        $categories = Category::all();
+        $categoriesCount = $categories->count();
+
+        return response()->json([
+            'message' => 'Categories retrieved successfully',
+            'categoriesCount' => $categoriesCount,
+            'categories' => $categories
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Get category by id
+    public function getCategoryById($id)
     {
-        //
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json([
+                'message' => 'Category not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Category retrieved successfully',
+            'category' => $category
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // Create category
+    public function createCategory(Request $request)
     {
-        //
+        $category = Category::create($request->all());
+
+        return response()->json([
+            'message' => 'Category created successfully',
+            'category' => $category
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
+    // Update category
+    public function updateCategory(Request $request, $id)
     {
-        //
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json([
+                'message' => 'Category not found'
+            ], 404);
+        }
+
+        $category->fill($request->all());
+        $category->save();
+
+        return response()->json([
+            'message' => 'Category updated successfully',
+            'category' => $category
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
+    // Delete category
+    public function deleteCategory($id)
     {
-        //
-    }
+        $category = Category::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
-    {
-        //
-    }
+        if (!$category) {
+            return response()->json([
+                'message' => 'Category not found'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Category $category)
-    {
-        //
+        $category->delete();
+
+        return response()->json([
+            'message' => 'Category deleted successfully'
+        ]);
     }
 }

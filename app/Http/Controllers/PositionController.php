@@ -8,59 +8,81 @@ use Illuminate\Http\Request;
 
 class PositionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // get all positions
+    public function getAllPositions()
     {
-        //
+        $positions = Position::all();
+        $positionsCount = $positions->count();
+        
+        return response()->json([
+            'message' => 'Positions retrieved successfully',
+            'count' => $positionsCount,
+            'positions' => $positions
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // get position by id   
+    public function getPositionById($id)
     {
-        //
+        $position = Position::find($id);
+
+        if (!$position) {
+            return response()->json([
+                'message' => 'Position not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Position retrieved successfully',
+            'position' => $position
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // create position
+    public function createPosition(Request $request)
     {
-        //
+        $position = Position::create($request->all());
+
+        return response()->json([
+            'message' => 'Position created successfully',
+            'position' => $position
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Position $position)
+    // update position by id
+    public function updatePosition(Request $request, $id)
     {
-        //
+        $position = Position::find($id);
+
+        if (!$position) {
+            return response()->json([
+                'message' => 'Position not found'
+            ], 404);
+        }
+
+        $position->update($request->all());
+
+        return response()->json([
+            'message' => 'Position updated successfully',
+            'position' => $position
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Position $position)
+    // delete position by id
+    public function deletePosition($id)
     {
-        //
-    }
+        $position = Position::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Position $position)
-    {
-        //
-    }
+        if (!$position) {
+            return response()->json([
+                'message' => 'Position not found'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Position $position)
-    {
-        //
+        $position->delete();
+
+        return response()->json([
+            'message' => 'Position deleted successfully'
+        ]);
     }
 }

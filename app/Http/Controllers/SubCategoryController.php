@@ -8,59 +8,81 @@ use Illuminate\Http\Request;
 
 class SubCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // get all subcategories
+    public function getAllSubCategories()
     {
-        //
+        $subcategories = SubCategory::all();
+        $subcategoriesCount = $subcategories->count();
+        
+        return response()->json([
+            'message' => 'SubCategories retrieved successfully',
+            'count' => $subcategoriesCount,
+            'subcategories' => $subcategories
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // get subcategory by id
+    public function getSubCategoryById($id)
     {
-        //
+        $subcategory = SubCategory::find($id);
+
+        if (!$subcategory) {
+            return response()->json([
+                'message' => 'SubCategory not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'SubCategory retrieved successfully',
+            'subcategory' => $subcategory
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // create subcategory
+    public function createSubCategory(Request $request)
     {
-        //
+        $subcategory = SubCategory::create($request->all());
+
+        return response()->json([
+            'message' => 'SubCategory created successfully',
+            'subcategory' => $subcategory
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(SubCategory $subCategory)
+    // update subcategory by id
+    public function updateSubCategory(Request $request, $id)
     {
-        //
+        $subcategory = SubCategory::find($id);
+
+        if (!$subcategory) {
+            return response()->json([
+                'message' => 'SubCategory not found'
+            ], 404);
+        }
+
+        $subcategory->update($request->all());
+
+        return response()->json([
+            'message' => 'SubCategory updated successfully',
+            'subcategory' => $subcategory
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(SubCategory $subCategory)
+    // delete subcategory by id
+    public function deleteSubCategory($id)
     {
-        //
-    }
+        $subcategory = SubCategory::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, SubCategory $subCategory)
-    {
-        //
-    }
+        if (!$subcategory) {
+            return response()->json([
+                'message' => 'SubCategory not found'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(SubCategory $subCategory)
-    {
-        //
+        $subcategory->delete();
+
+        return response()->json([
+            'message' => 'SubCategory deleted successfully'
+        ]);
     }
 }

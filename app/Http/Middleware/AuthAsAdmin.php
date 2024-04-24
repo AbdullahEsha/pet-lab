@@ -17,20 +17,14 @@ class AuthAsAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        // check if the user is authenticated
-        if (!auth()->check()) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], Response::HTTP_UNAUTHORIZED);
+        try {
+            $user = $request->user();
+            if ($user->role !== 'admin') {
+                return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+            }
+            return $next($request);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        // check if the user is an admin
-        if (auth()->user()->role !== 'admin') {
-            return response()->json([
-                'message' => 'Forbidden'
-            ], Response::HTTP_FORBIDDEN);
-        }
-
-        return $next($request);
     }
 }

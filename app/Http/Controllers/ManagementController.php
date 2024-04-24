@@ -8,59 +8,81 @@ use Illuminate\Http\Request;
 
 class ManagementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // get all managements
+    public function getAllManagements()
     {
-        //
+        $managements = Management::all();
+        $managementsCount = $managements->count();
+        
+        return response()->json([
+            'message' => 'Managements retrieved successfully',
+            'count' => $managementsCount,
+            'managements' => $managements
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // get management by id
+    public function getManagementById($id)
     {
-        //
+        $management = Management::find($id);
+
+        if (!$management) {
+            return response()->json([
+                'message' => 'Management not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Management retrieved successfully',
+            'management' => $management
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // create management
+    public function createManagement(Request $request)
     {
-        //
+        $management = Management::create($request->all());
+
+        return response()->json([
+            'message' => 'Management created successfully',
+            'management' => $management
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Management $management)
+    // update management by id
+    public function updateManagement(Request $request, $id)
     {
-        //
+        $management = Management::find($id);
+
+        if (!$management) {
+            return response()->json([
+                'message' => 'Management not found'
+            ], 404);
+        }
+
+        $management->update($request->all());
+
+        return response()->json([
+            'message' => 'Management updated successfully',
+            'management' => $management
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Management $management)
+    // delete management by id
+    public function deleteManagement($id)
     {
-        //
-    }
+        $management = Management::find($id);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Management $management)
-    {
-        //
-    }
+        if (!$management) {
+            return response()->json([
+                'message' => 'Management not found'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Management $management)
-    {
-        //
+        $management->delete();
+
+        return response()->json([
+            'message' => 'Management deleted successfully'
+        ]);
     }
 }
