@@ -14,8 +14,66 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [CredentialController::class, 'logout']);
 
     Route::group(['middleware' => [AuthAsAdmin::class]], function () {
+        // users
         Route::get('/users', [UserController::class, 'getAllUsers']);
         Route::get('/users/{id}', [UserController::class, 'getUserById']);
         Route::put('/users/{id}', [UserController::class, 'updateUser']);
+        Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
+
+        // Announcements
+        Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
+        Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
+        Route::post('/announcements', [AnnouncementController::class, 'createAnnouncement']);
+        Route::put('/announcements/{id}', [AnnouncementController::class, 'updateAnnouncement']);
+        Route::delete('/announcements/{id}', [AnnouncementController::class, 'deleteAnnouncement']);
+
+        // Articles
+        Route::get('/articles', [ArticleController::class, 'getAllArticles']);
+        Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
+        Route::post('/articles', [ArticleController::class, 'createArticle']);
+        Route::put('/articles/{id}', [ArticleController::class, 'updateArticle']);
+        Route::delete('/articles/{id}', [ArticleController::class, 'deleteArticle']);
+
+        // Categories   
+        Route::get('/categories', [CategoryController::class, 'getAllCategories']);
+        Route::get('/categories/{id}', [CategoryController::class, 'getCategoryById']);
+        Route::post('/categories', [CategoryController::class, 'createCategory']);
+        Route::put('/categories/{id}', [CategoryController::class, 'updateCategory']);
+        Route::delete('/categories/{id}', [CategoryController::class, 'deleteCategory']);
+
+        // SubCategories
+        Route::get('/subcategories', [SubCategoryController::class, 'getAllSubCategories']);
+        Route::get('/subcategories/{id}', [SubCategoryController::class, 'getSubCategoryById']);
+        Route::post('/subcategories', [SubCategoryController::class, 'createSubCategory']);
+        Route::put('/subcategories/{id}', [SubCategoryController::class, 'updateSubCategory']);
+        Route::delete('/subcategories/{id}', [SubCategoryController::class, 'deleteSubCategory']);
+
+        // Folders
+        Route::get('/folders', [FolderController::class, 'getAllFolders']);
+        Route::get('/folders/{id}', [FolderController::class, 'getFolderById']);
+        Route::post('/folders', [FolderController::class, 'createFolder']);
+        Route::put('/folders/{id}', [FolderController::class, 'updateFolder']);
+        Route::delete('/folders/{id}', [FolderController::class, 'deleteFolder']);
+
+        // Galleries
+        Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
+        Route::get('/galleries/{id}', [GalleryController::class, 'getGalleryById']);
+        Route::post('/galleries', [GalleryController::class, 'createGallery']);
+        Route::put('/galleries/{id}', [GalleryController::class, 'updateGallery']);
+        Route::delete('/galleries/{id}', [GalleryController::class, 'deleteGallery']);
+
+        // Managements
+        Route::get('/managements', [ManagementController::class, 'getAllManagements']);
+        Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
+        Route::post('/managements', [ManagementController::class, 'createManagement']);
+        Route::put('/managements/{id}', [ManagementController::class, 'updateManagement']);
+        Route::delete('/managements/{id}', [ManagementController::class, 'deleteManagement']);
+
+        // Positions
+        Route::get('/positions', [PositionController::class, 'getAllPositions']);
+        Route::get('/positions/{id}', [PositionController::class, 'getPositionById']);
+        Route::post('/positions', [PositionController::class, 'createPosition']);
+        Route::put('/positions/{id}', [PositionController::class, 'updatePosition']);
+        Route::delete('/positions/{id}', [PositionController::class, 'deletePosition']);
     });
 });
