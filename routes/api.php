@@ -2,16 +2,43 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Middleware\AuthAsAdmin;
+use App\Http\Middleware\CheckExpiryDate;
 
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\FolderController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\ManagementController;
+use App\Http\Controllers\PositionController;
+
 
 Route::post('/register', [CredentialController::class, 'register']);
 Route::post('/login', [CredentialController::class, 'login']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [CredentialController::class, 'logout']);
+
+    // Announcements
+    Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
+    Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
+
+    // Articles
+    Route::get('/articles', [ArticleController::class, 'getAllArticles']);
+    Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
+
+    // Galleries
+    Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
+    Route::get('/galleries/{id}', [GalleryController::class, 'getGalleryById']);
+
+    // Managements
+    Route::get('/managements', [ManagementController::class, 'getAllManagements']);
+    Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
 
     Route::group(['middleware' => [AuthAsAdmin::class]], function () {
         // users
@@ -21,15 +48,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 
         // Announcements
-        Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
-        Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
         Route::post('/announcements', [AnnouncementController::class, 'createAnnouncement']);
         Route::put('/announcements/{id}', [AnnouncementController::class, 'updateAnnouncement']);
         Route::delete('/announcements/{id}', [AnnouncementController::class, 'deleteAnnouncement']);
 
         // Articles
-        Route::get('/articles', [ArticleController::class, 'getAllArticles']);
-        Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
         Route::post('/articles', [ArticleController::class, 'createArticle']);
         Route::put('/articles/{id}', [ArticleController::class, 'updateArticle']);
         Route::delete('/articles/{id}', [ArticleController::class, 'deleteArticle']);
@@ -56,8 +79,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/folders/{id}', [FolderController::class, 'deleteFolder']);
 
         // Galleries
-        Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
-        Route::get('/galleries/{id}', [GalleryController::class, 'getGalleryById']);
         Route::post('/galleries', [GalleryController::class, 'createGallery']);
         Route::put('/galleries/{id}', [GalleryController::class, 'updateGallery']);
         Route::delete('/galleries/{id}', [GalleryController::class, 'deleteGallery']);
