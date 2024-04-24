@@ -83,11 +83,9 @@ class CredentialController extends Controller
     public function logout(Request $request)
     {
         try {
-            $user_data = $request->user();
             $request->user()->tokens()->delete();
             return response()->json([
                 'message' => 'User logged out successfully',
-                'user' => $user_data
             ]);
         } catch (\Throwable $th) {
             return response()->json([
