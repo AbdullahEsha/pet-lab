@@ -29,7 +29,6 @@ class User extends Authenticatable
         'labId',
         'subExpDate',
         'isApproved',
-        'detailsId',
         'token',
     ];
 

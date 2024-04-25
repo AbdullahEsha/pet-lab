@@ -105,6 +105,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // transaction
         Route::get('/transactions', [TransactionController::class, 'getAllTransactions']);
         Route::get('/transactions/{id}', [TransactionController::class, 'getTransactionById']);
+        Route::get('/transactions/user/{id}', [TransactionController::class, 'getTransactionsByUserId']);
         Route::put('/transactions/{id}', [TransactionController::class, 'updateTransaction']);
         Route::delete('/transactions/{id}', [TransactionController::class, 'deleteTransaction']);
     });
