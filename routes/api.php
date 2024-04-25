@@ -16,10 +16,14 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ManagementController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\TransactionController;
 
 
 Route::post('/register', [CredentialController::class, 'register']);
 Route::post('/login', [CredentialController::class, 'login']);
+
+// create transaction
+Route::post('/transactions', [TransactionController::class, 'createTransaction']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [CredentialController::class, 'logout']);
@@ -44,6 +48,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // users
         Route::get('/users', [UserController::class, 'getAllUsers']);
         Route::get('/users/{id}', [UserController::class, 'getUserById']);
+        Route::post('/users', [UserController::class, 'createUser']);
         Route::put('/users/{id}', [UserController::class, 'updateUser']);
         Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 
@@ -96,5 +101,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/positions', [PositionController::class, 'createPosition']);
         Route::put('/positions/{id}', [PositionController::class, 'updatePosition']);
         Route::delete('/positions/{id}', [PositionController::class, 'deletePosition']);
+
+        // transaction
+        Route::get('/transactions', [TransactionController::class, 'getAllTransactions']);
+        Route::get('/transactions/{id}', [TransactionController::class, 'getTransactionById']);
+        Route::put('/transactions/{id}', [TransactionController::class, 'updateTransaction']);
+        Route::delete('/transactions/{id}', [TransactionController::class, 'deleteTransaction']);
     });
 });
