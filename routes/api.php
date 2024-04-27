@@ -108,5 +108,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/transactions/user/{id}', [TransactionController::class, 'getTransactionsByUserId']);
         Route::put('/transactions/{id}', [TransactionController::class, 'updateTransaction']);
         Route::delete('/transactions/{id}', [TransactionController::class, 'deleteTransaction']);
+
+        // payments
+        Route::get('/payments', [PaymentController::class, 'getAllPayments']);
+        Route::get('/payments/{id}', [PaymentController::class, 'getPaymentById']);
+        Route::post('/payments', [PaymentController::class, 'createPayment']);
+        Route::put('/payments/{id}', [PaymentController::class, 'updatePayment']);
+        Route::delete('/payments/{id}', [PaymentController::class, 'deletePayment']);
     });
 });
