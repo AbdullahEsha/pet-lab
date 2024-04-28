@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+
 use App\Models\User;
 
 class UserController extends Controller
@@ -40,6 +44,18 @@ class UserController extends Controller
     // create user
     public function createUser(Request $request)
     {
+        // upload image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/users'), $imageName);
+            $request->image = $imageName;
+        }
+
+        // hash password
+        $request->password = Hash::make($request->password);
+
+        // create user
         $user = User::create($request->all());
 
         return response()->json([
@@ -103,8 +119,8 @@ class UserController extends Controller
             ], 404);
         }
 
-        // only update subExpDate
-        $user->subExpDate = $request->subExpDate;
+        // add 1 year to subExpDate
+        $user->subExpDate = date('Y-m-d', strtotime('+1 year', strtotime($user->subExpDate)));
         $user->isApproved = "pending"; // set isApproved to "pending" after updating subExpDate
 
         $user->save();
