@@ -28,6 +28,9 @@ Route::post('/transactions', [TransactionController::class, 'createTransaction']
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [CredentialController::class, 'logout']);
 
+    // subscriptions update request
+    Route::put('/subscriptions/{id}', [UserController::class, 'updateSubExpDate']);
+
     // Announcements
     Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
     Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
