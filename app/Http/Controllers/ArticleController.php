@@ -41,6 +41,13 @@ class ArticleController extends Controller
     // Create article
     public function createArticle(Request $request)
     {
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/articles'), $imageName);
+            $request->image = 'images/articles/' . $imageName;
+        }
+
         $article = Article::create($request->all());
 
         return response()->json([

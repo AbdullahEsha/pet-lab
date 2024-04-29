@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AnnouncementController extends Controller
 {
     // get all announcements
-    public function index()
+    public function getAllAnnouncements()
     {
         $announcements = Announcement::all();
         $announcementsCount = $announcements->count();

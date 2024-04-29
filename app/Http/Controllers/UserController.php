@@ -49,7 +49,7 @@ class UserController extends Controller
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/users'), $imageName);
-            $request->image = $imageName;
+            $request->image = 'images/users/' . $imageName;
         }
 
         // hash password
@@ -68,7 +68,7 @@ class UserController extends Controller
     public function updateUser(Request $request, $id)
     {
         $user = User::find($id);
-        
+
         if (!$user) {
             return response()->json([
                 'message' => 'User not found'
@@ -82,6 +82,17 @@ class UserController extends Controller
             ], 400);
         }
 
+        // password hash if password is updated
+        // one user can not update password of other users even if he is admin
+        if ($request->password) {
+            if (Auth::user()->id != $user->id) {
+                return response()->json([
+                    'message' => 'You can not update password of other users'
+                ], 400);
+            }
+            $request->password = Hash::make($request->password);
+        }
+        
         $user->update($request->all());
 
         return response()->json([
@@ -121,7 +132,6 @@ class UserController extends Controller
 
         // add 1 year to subExpDate
         $user->subExpDate = date('Y-m-d', strtotime('+1 year', strtotime($user->subExpDate)));
-        $user->isApproved = "pending"; // set isApproved to "pending" after updating subExpDate
 
         $user->save();
 

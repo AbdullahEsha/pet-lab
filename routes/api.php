@@ -31,28 +31,34 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // subscriptions update request
     Route::put('/subscriptions/{id}', [UserController::class, 'updateSubExpDate']);
 
-    // Announcements
-    Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
-    Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
+    // middleware check expiry date
+    Route::group(['middleware' => [CheckExpiryDate::class]], function () {
+        // users
+        Route::get('/users/{id}', [UserController::class, 'getUserById']);
+        Route::put('/users/{id}', [UserController::class, 'updateUser']);
 
-    // Articles
-    Route::get('/articles', [ArticleController::class, 'getAllArticles']);
-    Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
+        // Announcements
+        Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
+        Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
 
-    // Galleries
-    Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
-    Route::get('/galleries/{id}', [GalleryController::class, 'getGalleryById']);
+        // Articles
+        Route::get('/articles', [ArticleController::class, 'getAllArticles']);
+        Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
 
-    // Managements
-    Route::get('/managements', [ManagementController::class, 'getAllManagements']);
-    Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
+        // Galleries
+        Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
+        Route::get('/galleries/{id}', [GalleryController::class, 'getGalleryById']);
 
+        // Managements
+        Route::get('/managements', [ManagementController::class, 'getAllManagements']);
+        Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
+    });
+
+    // middleware auth as admin
     Route::group(['middleware' => [AuthAsAdmin::class]], function () {
         // users
         Route::get('/users', [UserController::class, 'getAllUsers']);
-        Route::get('/users/{id}', [UserController::class, 'getUserById']);
         Route::post('/users', [UserController::class, 'createUser']);
-        Route::put('/users/{id}', [UserController::class, 'updateUser']);
         Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 
         // Announcements
@@ -73,11 +79,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/categories/{id}', [CategoryController::class, 'deleteCategory']);
 
         // SubCategories
-        Route::get('/subcategories', [SubCategoryController::class, 'getAllSubCategories']);
-        Route::get('/subcategories/{id}', [SubCategoryController::class, 'getSubCategoryById']);
-        Route::post('/subcategories', [SubCategoryController::class, 'createSubCategory']);
-        Route::put('/subcategories/{id}', [SubCategoryController::class, 'updateSubCategory']);
-        Route::delete('/subcategories/{id}', [SubCategoryController::class, 'deleteSubCategory']);
+        Route::get('/sub-categories', [SubCategoryController::class, 'getAllSubCategories']);
+        Route::get('/sub-categories/{id}', [SubCategoryController::class, 'getSubCategoryById']);
+        Route::post('/sub-categories', [SubCategoryController::class, 'createSubCategory']);
+        Route::put('/sub-categories/{id}', [SubCategoryController::class, 'updateSubCategory']);
+        Route::delete('/sub-categories/{id}', [SubCategoryController::class, 'deleteSubCategory']);
 
         // Folders
         Route::get('/folders', [FolderController::class, 'getAllFolders']);
@@ -105,14 +111,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/positions/{id}', [PositionController::class, 'updatePosition']);
         Route::delete('/positions/{id}', [PositionController::class, 'deletePosition']);
 
-        // transaction
+        // Transaction
         Route::get('/transactions', [TransactionController::class, 'getAllTransactions']);
         Route::get('/transactions/{id}', [TransactionController::class, 'getTransactionById']);
         Route::get('/transactions/user/{id}', [TransactionController::class, 'getTransactionsByUserId']);
         Route::put('/transactions/{id}', [TransactionController::class, 'updateTransaction']);
         Route::delete('/transactions/{id}', [TransactionController::class, 'deleteTransaction']);
 
-        // payments
+        // Payments
         Route::get('/payments', [PaymentController::class, 'getAllPayments']);
         Route::get('/payments/{id}', [PaymentController::class, 'getPaymentById']);
         Route::post('/payments', [PaymentController::class, 'createPayment']);
