@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use App\Models\UserDetails;
 
 class UserController extends Controller
 {
@@ -69,6 +70,19 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
+        // if image is updated
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/users'), $imageName);
+            $request->image = 'images/users/' . $imageName;
+        }
+
+        // and delete the old image
+        if (file_exists(public_path($user->image))) {
+            unlink(public_path($user->image));
+        }
+
         if (!$user) {
             return response()->json([
                 'message' => 'User not found'
@@ -113,6 +127,12 @@ class UserController extends Controller
         }
 
         $user->delete();
+
+        // also delete user details if exists for this user
+        $userDetails = UserDetails::where('user_id', $id)->first();
+        if ($userDetails) {
+            $userDetails->delete();
+        }
 
         return response()->json([
             'message' => 'User deleted successfully'

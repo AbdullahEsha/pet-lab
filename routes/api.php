@@ -17,6 +17,9 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\ManagementController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserDetailsController;
+
 
 
 Route::post('/register', [CredentialController::class, 'register']);
@@ -24,6 +27,9 @@ Route::post('/login', [CredentialController::class, 'login']);
 
 // create transaction
 Route::post('/transactions', [TransactionController::class, 'createTransaction']);
+
+// user details
+Route::post('/user-details', [UserDetailsController::class, 'createUserDetails']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [CredentialController::class, 'logout']);
@@ -37,6 +43,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/users/{id}', [UserController::class, 'getUserById']);
         Route::put('/users/{id}', [UserController::class, 'updateUser']);
 
+        // user details
+        Route::get('/user-details/{user_id}', [UserDetailsController::class, 'getUserDetailsByUserId']);
+        Route::put('/user-details/{user_id}', [UserDetailsController::class, 'updateUserDetails']);
+
         // Announcements
         Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
         Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
@@ -44,6 +54,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // Articles
         Route::get('/articles', [ArticleController::class, 'getAllArticles']);
         Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
+        Route::get('/articles/category/{category}', [ArticleController::class, 'getArticlesByCategory']);
 
         // Galleries
         Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
@@ -60,6 +71,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/users', [UserController::class, 'getAllUsers']);
         Route::post('/users', [UserController::class, 'createUser']);
         Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
+
+        // user details
+        Route::get('/user-details', [UserDetailsController::class, 'getAllUserDetails']);
+        Route::delete('/user-details/{user_id}', [UserDetailsController::class, 'deleteUserDetails']);
 
         // Announcements
         Route::post('/announcements', [AnnouncementController::class, 'createAnnouncement']);

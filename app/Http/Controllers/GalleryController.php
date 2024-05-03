@@ -49,6 +49,18 @@ class GalleryController extends Controller
     // create gallery
     public function createGallery(Request $request)
     {
+        // images contain multiple files in json format
+        if($request->hasFile('images')) {
+            $images = $request->file('images');
+            $imagePaths = [];
+            foreach ($images as $image) {
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/gallery'), $imageName);
+                $imagePaths[] = 'images/gallery/' . $imageName;
+            }
+            $request->images = json_encode($imagePaths);
+        }
+
         $gallery = Gallery::create($request->all());
 
         return response()->json([
@@ -57,10 +69,24 @@ class GalleryController extends Controller
         ]);
     }
 
+
     // update gallery by id
     public function updateGallery(Request $request, $id)
     {
+        // find the gallery by id
+        if($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/gallery'), $imageName);
+            $request->image = 'images/gallery/' . $imageName;
+        }
+
         $gallery = Gallery::find($id);
+
+        // also delete the old image
+        if (file_exists(public_path($gallery->image))) {
+            unlink(public_path($gallery->image));
+        }
 
         if (!$gallery) {
             return response()->json([
