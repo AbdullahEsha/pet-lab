@@ -49,19 +49,28 @@ class GalleryController extends Controller
     // create gallery
     public function createGallery(Request $request)
     {
-        // images contain multiple files in json format
-        if($request->hasFile('images')) {
-            $images = $request->file('images');
-            $imagePaths = [];
-            foreach ($images as $image) {
+        // if images has files then upload them
+        if ($request->hasFile('images')) {
+            $images = [];
+            foreach ($request->file('images') as $image) {
                 $imageName = time() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('images/gallery'), $imageName);
-                $imagePaths[] = 'images/gallery/' . $imageName;
-            }
-            $request->images = json_encode($imagePaths);
-        }
+                $images[] = 'images/gallery/' . $imageName;
 
-        $gallery = Gallery::create($request->all());
+                // json_encode($images);
+                $images = json_encode($images);
+            }
+        } else{
+            // Convert array to JSON string before saving
+            $images = json_encode($request->images);
+        }
+            
+        // Create a new gallery instance
+        $gallery = new Gallery();
+        $gallery->title = $request->title;
+        $gallery->images = $images; // Assign JSON string to the 'images' attribute
+        $gallery->folder = $request->folder;
+        $gallery->save();
 
         return response()->json([
             'message' => 'Gallery created successfully',
@@ -69,23 +78,33 @@ class GalleryController extends Controller
         ]);
     }
 
-
     // update gallery by id
     public function updateGallery(Request $request, $id)
     {
         // find the gallery by id
-        if($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/gallery'), $imageName);
-            $request->image = 'images/gallery/' . $imageName;
+        if($request->hasFile('images')) {
+            $images = [];
+            foreach ($request->file('images') as $image) {
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('images/gallery'), $imageName);
+                $images[] = 'images/gallery/' . $imageName;
+
+                // json_encode($images);
+                $images = json_encode($images);
+            }
+        } else{
+            // Convert array to JSON string before saving
+            $images = json_encode($request->images);
         }
 
         $gallery = Gallery::find($id);
 
-        // also delete the old image
-        if (file_exists(public_path($gallery->image))) {
-            unlink(public_path($gallery->image));
+        // also delete the old images if any of the file is found in public path
+        $oldImages = json_decode($gallery->images);
+        foreach ($oldImages as $oldImage) {
+            if (file_exists(public_path($oldImage))) {
+                unlink(public_path($oldImage));
+            }
         }
 
         if (!$gallery) {
