@@ -86,9 +86,9 @@ class TransactionController extends Controller
     }
 
     // get transactions by user id
-    public function getTransactionsByUserId($userId)
+    public function getTransactionsByUserId($user_id)
     {
-        $transactions = Transaction::where('userId', $userId)->get();
+        $transactions = Transaction::where('user_id', $user_id)->get();
         $transactionsCount = $transactions->count();
 
         return response()->json([

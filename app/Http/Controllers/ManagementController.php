@@ -41,6 +41,14 @@ class ManagementController extends Controller
     // create management
     public function createManagement(Request $request)
     {
+        // if image has file then upload it
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/management'), $imageName);
+            $request->image = 'images/management/' . $imageName;
+        }
+
         $management = Management::create($request->all());
 
         return response()->json([
@@ -53,6 +61,19 @@ class ManagementController extends Controller
     public function updateManagement(Request $request, $id)
     {
         $management = Management::find($id);
+
+        // if image has file then upload it
+        if($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/management'), $imageName);
+            $request->image = 'images/management/' . $imageName;
+        }
+
+        // also delete the old image
+        if (file_exists(public_path($management->image))) {
+            unlink(public_path($management->image));
+        }
 
         if (!$management) {
             return response()->json([

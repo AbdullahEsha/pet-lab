@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('managements_tablele', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('position');
-            $table->string('emp_name');
-            $table->text('details');
+            $table->string('transaction_id');
+            $table->string('amount');
+            $table->string('transaction_type');
+            $table->string('transaction_status');
             $table->string('image');
+            $table->string('user_id');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('managements_tablele');
+        Schema::dropIfExists('transactions');
     }
 };

@@ -9,10 +9,14 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $table = 'transactions';
+
     protected $fillable = [
-        'transactionId', 
-        'amount', 
-        'narration', // it can be for subscription or event participation or any other transaction
-        'userId'
+        'transaction_id',
+        'amount',
+        'transaction_type',
+        'transaction_status',
+        'image',
+        'user_id'
     ];
 }

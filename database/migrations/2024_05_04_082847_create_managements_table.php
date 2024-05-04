@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('managements', function (Blueprint $table) {
             $table->id();
-            $table->string('transactionId');
-            $table->string('amount');
-            $table->string('transactionType');
-            $table->string('transactionStatus')->default('pending');
-            $table->string('image');
-            $table->string('userId');
+            $table->string('position');
+            $table->string('emp_name');
+            $table->text('details')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('managements');
     }
 };
