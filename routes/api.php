@@ -3,9 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// middleware
 use App\Http\Middleware\AuthAsAdmin;
 use App\Http\Middleware\CheckExpiryDate;
 
+// controllers
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnnouncementController;
@@ -19,9 +21,9 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserDetailsController;
+use App\Http\Controllers\EventController;
 
-
-
+// credentials
 Route::post('/register', [CredentialController::class, 'register']);
 Route::post('/login', [CredentialController::class, 'login']);
 
@@ -32,6 +34,7 @@ Route::post('/transactions', [TransactionController::class, 'createTransaction']
 Route::post('/user-details', [UserDetailsController::class, 'createUserDetails']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    // logout
     Route::post('/logout', [CredentialController::class, 'logout']);
 
     // subscriptions update request
@@ -49,6 +52,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
         // Announcements
         Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
+        // latest announcement
+        Route::get('/announcements/latest', [AnnouncementController::class, 'getLatestAnnouncement']);
         Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
 
         // Articles
@@ -63,6 +68,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // Managements
         Route::get('/managements', [ManagementController::class, 'getAllManagements']);
         Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
+
+        // Events
+        Route::get('/events', [EventController::class, 'getAllEvents']);
+        Route::get('/events/{id}', [EventController::class, 'getEventById']);
     });
 
     // middleware auth as admin
@@ -139,5 +148,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/payments', [PaymentController::class, 'createPayment']);
         Route::put('/payments/{id}', [PaymentController::class, 'updatePayment']);
         Route::delete('/payments/{id}', [PaymentController::class, 'deletePayment']);
+
+        // Events
+        Route::post('/events', [EventController::class, 'createEvent']);
+        Route::put('/events/{id}', [EventController::class, 'updateEvent']);
+        Route::delete('/events/{id}', [EventController::class, 'deleteEvent']);
     });
 });

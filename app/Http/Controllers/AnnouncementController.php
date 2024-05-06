@@ -87,4 +87,21 @@ class AnnouncementController extends Controller
             'message' => 'Announcement deleted successfully'
         ]);
     }
+
+    // get latest announcement by date
+    public function getLatestAnnouncement()
+    {
+        $announcement = Announcement::latest()->first();
+
+        if (!$announcement) {
+            return response()->json([
+                'message' => 'Announcement not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Latest announcement retrieved successfully',
+            'announcement' => $announcement
+        ]);
+    }
 }
