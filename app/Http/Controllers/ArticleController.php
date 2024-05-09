@@ -14,8 +14,29 @@ class ArticleController extends Controller
         $articles = Article::all();
         $articlesCount = $articles->count();
 
+        // if perams count=true then return only count of articles
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Articles count retrieved successfully',
+                'articlesCount' => $articlesCount
+            ]);
+        }
+
         return response()->json([
             'message' => 'Articles retrieved successfully',
+            'articlesCount' => $articlesCount,
+            'articles' => $articles
+        ]);
+    }
+
+    // Get all public articles
+    public function getAllPublicArticles()
+    {
+        $articles = Article::where('is_public', true)->get();
+        $articlesCount = $articles->count();
+
+        return response()->json([
+            'message' => 'Public articles retrieved successfully',
             'articlesCount' => $articlesCount,
             'articles' => $articles
         ]);

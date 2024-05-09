@@ -13,6 +13,14 @@ class PositionController extends Controller
     {
         $positions = Position::all();
         $positionsCount = $positions->count();
+
+        // if perams count=true then return only count of positions
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Positions count retrieved successfully',
+                'count' => $positionsCount
+            ]);
+        }
         
         return response()->json([
             'message' => 'Positions retrieved successfully',

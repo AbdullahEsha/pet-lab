@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('category');
             $table->string('sub_category');
+            $table->boolean('is_public');
             $table->timestamps();
         });
     }

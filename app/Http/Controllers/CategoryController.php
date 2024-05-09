@@ -14,6 +14,14 @@ class CategoryController extends Controller
         $categories = Category::all();
         $categoriesCount = $categories->count();
 
+        // if perams count=true then return only count of categories
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Categories count retrieved successfully',
+                'categoriesCount' => $categoriesCount
+            ]);
+        }
+
         return response()->json([
             'message' => 'Categories retrieved successfully',
             'categoriesCount' => $categoriesCount,

@@ -8,19 +8,19 @@ use Illuminate\Http\Request;
 
 class GalleryController extends Controller
 {
-    //Schema::create('galleries', function (Blueprint $table) {
-    //    $table->id();
-    //    $table->string('title');
-    //    $table->json('image');
-    //    $table->string('folder');
-    //    $table->timestamps();
-    //});
-    
     // get all galleries
     public function getAllGalleries()
     {
         $galleries = Gallery::all();
         $galleriesCount = $galleries->count();
+
+        // if perams count=true then return only count of galleries
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Galleries count retrieved successfully',
+                'count' => $galleriesCount
+            ]);
+        }
         
         return response()->json([
             'message' => 'Galleries retrieved successfully',

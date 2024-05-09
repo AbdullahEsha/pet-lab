@@ -13,6 +13,14 @@ class PaymentController extends Controller
         $payments = Payment::all();
         $paymentscount = $payments->count();
 
+        // If perams count=true then return only count of payments
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Payments count retrieved successfully',
+                'count' => $paymentscount
+            ]);
+        }
+
         return response()->json([
             'message' => 'Payments retrieved successfully',
             'count' => $paymentscount,

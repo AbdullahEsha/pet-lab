@@ -18,6 +18,14 @@ class UserController extends Controller
         $users = User::all();
         $usersCount = $users->count();
 
+        // if perams count=true then return only count of users
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Users count retrieved successfully',
+                'usersCount' => $usersCount
+            ]);
+        }
+
         return response()->json([
             'message' => 'Users retrieved successfully',
             'usersCount' => $usersCount,

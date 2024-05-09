@@ -33,6 +33,9 @@ Route::post('/transactions', [TransactionController::class, 'createTransaction']
 // user details
 Route::post('/user-details', [UserDetailsController::class, 'createUserDetails']);
 
+// get all public articles
+Route::get('/articles/public', [ArticleController::class, 'getAllPublicArticles']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // logout
     Route::post('/logout', [CredentialController::class, 'logout']);

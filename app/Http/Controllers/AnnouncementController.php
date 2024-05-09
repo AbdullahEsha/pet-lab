@@ -13,6 +13,14 @@ class AnnouncementController extends Controller
     {
         $announcements = Announcement::all();
         $announcementsCount = $announcements->count();
+
+        // if perams count=true then return only count of announcements
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Announcements count retrieved successfully',
+                'count' => $announcementsCount
+            ]);
+        }
         
         return response()->json([
             'message' => 'Announcements retrieved successfully',

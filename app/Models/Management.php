@@ -12,7 +12,8 @@ class Management extends Model
     protected $table = 'managements';
     
     protected $fillable = [
-        'position',
+        'role',
+        'committee',
         'emp_name',
         'details',
         'image'

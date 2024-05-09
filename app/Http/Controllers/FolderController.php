@@ -14,6 +14,14 @@ class FolderController extends Controller
         $folders = Folder::all();
         $foldersCount = $folders->count();
 
+        // If perams count=true then return only count of folders
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Folders count retrieved successfully',
+                'foldersCount' => $foldersCount
+            ]);
+        }
+
         return response()->json([
             'message' => 'Folders retrieved successfully',
             'foldersCount' => $foldersCount,

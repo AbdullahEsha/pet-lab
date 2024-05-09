@@ -22,6 +22,14 @@ class EventController extends Controller
         $events = Event::all();
         $eventsCount = $events->count();
 
+        // If perams count=true then return only count of events
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Events count retrieved successfully',
+                'eventsCount' => $eventsCount
+            ]);
+        }
+
         return response()->json([
             'message' => 'Events retrieved successfully',
             'eventsCount' => $eventsCount,

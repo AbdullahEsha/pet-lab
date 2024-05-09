@@ -13,6 +13,14 @@ class ManagementController extends Controller
     {
         $managements = Management::all();
         $managementsCount = $managements->count();
+
+        // if perams count=true then return only count of managements
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Managements count retrieved successfully',
+                'count' => $managementsCount
+            ]);
+        }
         
         return response()->json([
             'message' => 'Managements retrieved successfully',

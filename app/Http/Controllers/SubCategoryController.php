@@ -13,6 +13,14 @@ class SubCategoryController extends Controller
     {
         $subcategories = SubCategory::all();
         $subcategoriesCount = $subcategories->count();
+
+        // if perams count=true then return only count of subcategories
+        if (request()->count) {
+            return response()->json([
+                'message' => 'SubCategories count retrieved successfully',
+                'count' => $subcategoriesCount
+            ]);
+        }
         
         return response()->json([
             'message' => 'SubCategories retrieved successfully',

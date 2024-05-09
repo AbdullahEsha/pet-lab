@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('managements', function (Blueprint $table) {
             $table->id();
-            $table->string('position');
+            $table->string('role');
+            $table->string('committee')->nullable();
             $table->string('emp_name');
             $table->text('details')->nullable();
             $table->string('image')->nullable();

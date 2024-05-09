@@ -13,6 +13,14 @@ class TransactionController extends Controller
         $transactions = Transaction::all();
         $transactionsCount = $transactions->count();
 
+        // if perams count=true then return only count of transactions
+        if (request()->count) {
+            return response()->json([
+                'message' => 'Transactions count retrieved successfully',
+                'count' => $transactionsCount
+            ]);
+        }
+
         return response()->json([
             'message' => 'Transactions retrieved successfully',
             'count' => $transactionsCount,
