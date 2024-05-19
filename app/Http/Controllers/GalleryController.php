@@ -21,6 +21,12 @@ class GalleryController extends Controller
                 'count' => $galleriesCount
             ]);
         }
+
+        // if perams folder="folder_name" then return only galleries with that folder name 
+        if (request()->folder) {
+            $galleries = Gallery::where('folder', request()->folder)->get();
+            $galleriesCount = $galleries->count();
+        }
         
         return response()->json([
             'message' => 'Galleries retrieved successfully',
