@@ -6,13 +6,12 @@ use App\Models\Event;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-// Attributes
-// - id: int
-// - title: string
-// - description: string
-// - image: string
-// - expires at: date
-// - fees: double
+// 'title',
+//         'description',
+//         'image',
+//         'expires_at',
+//         'fees'
+
 
 class EventController extends Controller
 {
@@ -57,25 +56,27 @@ class EventController extends Controller
     // Create event
     public function createEvent(Request $request)
     {
+        $createEvent = $request->all();
         // If image has file then upload it
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/event'), $imageName);
-            $request->image = 'images/event/' . $imageName;
+            $createEvent['image'] = 'images/event/' . $imageName;
         }
 
-        $event = Event::create($request->all());
+        $event = Event::create($createEvent);
 
         return response()->json([
             'message' => 'Event created successfully',
-            'event' => $event
+            'event' => $event,
         ]);
     }
 
     // Update event
     public function updateEvent(Request $request, $id)
     {
+        $updateEvent = $request->all();
         $event = Event::find($id);
 
         if (!$event) {
@@ -89,10 +90,10 @@ class EventController extends Controller
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/event'), $imageName);
-            $request->image = 'images/event/' . $imageName;
+            $updateEvent['image'] = 'images/event/' . $imageName;
         }
 
-        $event->fill($request->all());
+        $event->fill($updateEvent);
         $event->save();
 
         return response()->json([
