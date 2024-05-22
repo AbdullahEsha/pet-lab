@@ -34,21 +34,15 @@ class CredentialController extends Controller
             ], 400);
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'image' => $request->image,
-            'password' => Hash::make($request->password),
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'city' => $request->city,
-            'role' => $request->role,
-            'labId' => $request->labId,
-            'subExpDate' => $request->subExpDate,
-            'isApproved' => $request->isApproved,
-            'detailsId' => $request->detailsId,
-            'token' => null
-        ]);
+        // if has file then upload it
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('images/user'), $imageName);
+            $validator['image'] = 'images/user/' . $imageName;
+        }
+
+        $user = User::create( $validator->validated() + ['password' => Hash::make($request->password) ] + ['token' => ''] );
 
         return response()->json([
             'message' => 'User created successfully',

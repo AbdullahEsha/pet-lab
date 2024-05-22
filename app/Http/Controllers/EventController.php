@@ -60,7 +60,7 @@ class EventController extends Controller
         // If image has file then upload it
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/event'), $imageName);
             $createEvent['image'] = 'images/event/' . $imageName;
         }
@@ -88,7 +88,7 @@ class EventController extends Controller
         // If image has file then upload it
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/event'), $imageName);
             $updateEvent['image'] = 'images/event/' . $imageName;
         }
@@ -98,7 +98,7 @@ class EventController extends Controller
 
         return response()->json([
             'message' => 'Event updated successfully',
-            'event' => $event
+            'event' => $event,
         ]);
     }
 

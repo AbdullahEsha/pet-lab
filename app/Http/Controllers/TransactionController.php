@@ -48,7 +48,23 @@ class TransactionController extends Controller
     // create transaction
     public function createTransaction(Request $request)
     {
-        $transaction = Transaction::create($request->all());
+        $createTransaction = $request->all();
+
+        if ($createTransaction['amount'] < 0) {
+            return response()->json([
+                'message' => 'Amount cannot be negative'
+            ], 400);
+        }
+
+        // if has file then upload it
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('images/transaction'), $imageName);
+            $createTransaction['image'] = 'images/transaction/' . $imageName;
+        }
+
+        $transaction = Transaction::create($createTransaction);
 
         return response()->json([
             'message' => 'Transaction created successfully',
@@ -59,6 +75,7 @@ class TransactionController extends Controller
     // update transaction by id
     public function updateTransaction(Request $request, $id)
     {
+        $updateTransaction = $request->all();
         $transaction = Transaction::find($id);
 
         if (!$transaction) {
@@ -67,7 +84,27 @@ class TransactionController extends Controller
             ], 404);
         }
 
-        $transaction->update($request->all());
+        // if amount is negative
+        if ($updateTransaction['amount'] < 0) {
+            return response()->json([
+                'message' => 'Amount cannot be negative'
+            ], 400);
+        }
+
+        // if has file then upload it
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('images/transaction'), $imageName);
+            $updateTransaction['image'] = 'images/transaction/' . $imageName;
+        }
+
+        // delete the old image
+        if (file_exists(public_path($transaction->image))) {
+            unlink(public_path($transaction->image));
+        }
+
+        $transaction->update($updateTransaction);
 
         return response()->json([
             'message' => 'Transaction updated successfully',
@@ -84,6 +121,11 @@ class TransactionController extends Controller
             return response()->json([
                 'message' => 'Transaction not found'
             ], 404);
+        }
+
+        // delete old image
+        if (file_exists(public_path($transaction->image))) {
+            unlink(public_path($transaction->image));
         }
 
         $transaction->delete();

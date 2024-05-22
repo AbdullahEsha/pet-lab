@@ -49,15 +49,16 @@ class ManagementController extends Controller
     // create management
     public function createManagement(Request $request)
     {
+        $createManagement = $request->all();
         // if image has file then upload it
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/management'), $imageName);
-            $request->image = 'images/management/' . $imageName;
+            $createManagement['image'] = 'images/management/' . $imageName;
         }
 
-        $management = Management::create($request->all());
+        $management = Management::create($createManagement);
 
         return response()->json([
             'message' => 'Management created successfully',
@@ -68,14 +69,15 @@ class ManagementController extends Controller
     // update management by id
     public function updateManagement(Request $request, $id)
     {
+        $updateManagement = $request->all();
         $management = Management::find($id);
 
         // if image has file then upload it
         if($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/management'), $imageName);
-            $request->image = 'images/management/' . $imageName;
+            $updateManagement['image'] = 'images/management/' . $imageName;
         }
 
         // also delete the old image
@@ -89,7 +91,7 @@ class ManagementController extends Controller
             ], 404);
         }
 
-        $management->update($request->all());
+        $management->update($updateManagement);
 
         return response()->json([
             'message' => 'Management updated successfully',

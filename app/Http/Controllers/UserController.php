@@ -53,19 +53,20 @@ class UserController extends Controller
     // create user
     public function createUser(Request $request)
     {
+        $createUser = $request->all();
         // upload image
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/users'), $imageName);
-            $request->image = 'images/users/' . $imageName;
+            $createUser['image'] = 'images/users/' . $imageName;
         }
 
         // hash password
         $request->password = Hash::make($request->password);
 
         // create user
-        $user = User::create($request->all());
+        $user = User::create($createUser);
 
         return response()->json([
             'message' => 'User created successfully',
@@ -76,14 +77,15 @@ class UserController extends Controller
     // update user
     public function updateUser(Request $request, $id)
     {
+        $updateUser = $request->all();
         $user = User::find($id);
 
         // if image is updated
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/users'), $imageName);
-            $request->image = 'images/users/' . $imageName;
+            $updateUser['image'] = 'images/users/' . $imageName;
         }
 
         // and delete the old image
@@ -98,10 +100,12 @@ class UserController extends Controller
         }
 
         // can not update subExpDate
-        if ($request->subExpDate) {
-            return response()->json([
-                'message' => 'You can not update subExpDate'
-            ], 400);
+        if ($request->subExpDate && Auth::user()->id != $user->id){
+            // authencate user 
+                return response()->json([
+                    'message' => 'You can not update subExpDate of other users'
+                ], 400);
+            
         }
 
         // password hash if password is updated
@@ -112,10 +116,10 @@ class UserController extends Controller
                     'message' => 'You can not update password of other users'
                 ], 400);
             }
-            $request->password = Hash::make($request->password);
+            $updateUser['password'] = Hash::make($request->password);
         }
         
-        $user->update($request->all());
+        $user->update($updateUser);
 
         return response()->json([
             'message' => 'User updated successfully',
@@ -132,6 +136,11 @@ class UserController extends Controller
             return response()->json([
                 'message' => 'User not found'
             ], 404);
+        }
+
+        // delete old image
+        if (file_exists(public_path($user->image))) {
+            unlink(public_path($user->image));
         }
 
         $user->delete();
