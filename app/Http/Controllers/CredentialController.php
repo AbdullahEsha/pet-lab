@@ -6,43 +6,24 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class CredentialController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'image' => 'required|string',
-            'password' => 'required|string',
-            'phone' => 'required|string',
-            'address' => 'required|string',
-            'city' => 'required|string',
-            'role' => 'required|string',
-            'labId' => 'nullable|string',
-            'subExpDate' => 'nullable|date',
-            'isApproved' => 'nullable|string',
-            'detailsId' => 'nullable|integer',
-            'token' => 'nullable|string'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 400);
-        }
+        $registerUser = $request->all();
 
         // if has file then upload it
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/user'), $imageName);
-            $validator['image'] = 'images/user/' . $imageName;
+            $registerUser['image'] = 'images/user/' . $imageName;
         }
+        // hash the password
+        $registerUser['password'] = Hash::make($registerUser['password']);
 
-        $user = User::create( $validator->validated() + ['password' => Hash::make($request->password) ] + ['token' => ''] );
+        $user = User::create($registerUser);
 
         return response()->json([
             'message' => 'User created successfully',
