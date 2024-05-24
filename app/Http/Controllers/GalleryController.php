@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Gallery;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class GalleryController extends Controller
 {
@@ -55,8 +56,20 @@ class GalleryController extends Controller
     // create gallery
     public function createGallery(Request $request)
     {
-        $createGallery = $request->all();
-        // if images has files then upload them
+      try {
+        $data = $request->all();
+    
+        // Validate title presence (optional)
+        if (!isset($data['title']) || empty($data['title'])) {
+          throw new Exception('Missing required field: title');
+        }
+    
+        // Validate folder presence (optional)
+        if (!isset($data['folder']) || empty($data['folder'])) {
+          throw new Exception('Missing required field: folder');
+        }
+
+        // if images has files then upload them 
         if ($request->hasFile('images')) {
             $images = [];
             foreach ($request->file('images') as $image) {
@@ -64,18 +77,24 @@ class GalleryController extends Controller
                 $image->move(public_path('images/gallery'), $imageName);
                 $images[] = 'images/gallery/' . $imageName;
             }
-
+        
             // json_encode($images);
-            $createGallery['images'] = json_encode($images);
+            $data['images'] = json_encode($images);
         }
 
-        $gallery = Gallery::create($createGallery);
-
+        $gallery = Gallery::create($data);
+    
         return response()->json([
-            'message' => 'Gallery created successfully',
-            'gallery' => $gallery
+          'message' => 'Gallery created successfully',
+          'gallery' => $gallery
         ]);
+      } catch (\Throwable $th) {
+        return response()->json([
+          'message' => $th->getMessage()
+        ], 500);
+      }
     }
+    
 
     // update gallery by id
     public function updateGallery(Request $request, $id)
