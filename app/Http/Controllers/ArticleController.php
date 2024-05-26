@@ -103,7 +103,7 @@ class ArticleController extends Controller
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/article'), $imageName);
-            $request->image = 'images/article/' . $imageName;
+            $updateArticle['image'] = 'images/article/' . $imageName;
         }
 
         // and delete the old image

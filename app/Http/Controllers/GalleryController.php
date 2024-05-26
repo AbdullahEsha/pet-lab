@@ -56,51 +56,26 @@ class GalleryController extends Controller
     // create gallery
     public function createGallery(Request $request)
     {
-      try {
-        $data = $request->all();
-    
-        // Validate title presence (optional)
-        if (!isset($data['title']) || empty($data['title'])) {
-          throw new Exception('Missing required field: title');
+        try {
+            // json_encode folder
+            $gallery = Gallery::create($request->all());
+            return response()->json([
+                'message' => 'Gallery created successfully',
+                'gallery' => $gallery
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gallery not created',
+                'error' => $e->getMessage(),
+                'request' => $request->all()
+            ], 400);
         }
-    
-        // Validate folder presence (optional)
-        if (!isset($data['folder']) || empty($data['folder'])) {
-          throw new Exception('Missing required field: folder');
-        }
-
-        // if images has files then upload them 
-        if ($request->hasFile('images')) {
-            $images = [];
-            foreach ($request->file('images') as $image) {
-                $imageName = $image->getClientOriginalName();
-                $image->move(public_path('images/gallery'), $imageName);
-                $images[] = 'images/gallery/' . $imageName;
-            }
-        
-            // json_encode($images);
-            $data['images'] = json_encode($images);
-        }
-
-        $gallery = Gallery::create($data);
-    
-        return response()->json([
-          'message' => 'Gallery created successfully',
-          'gallery' => $gallery
-        ]);
-      } catch (\Throwable $th) {
-        return response()->json([
-          'message' => $th->getMessage()
-        ], 500);
-      }
     }
     
 
     // update gallery by id
     public function updateGallery(Request $request, $id)
     {
-        $updateGallery = $request->all();
-
         $gallery = Gallery::find($id);
 
         if (!$gallery) {
@@ -109,31 +84,7 @@ class GalleryController extends Controller
             ], 404);
         }
 
-        // if images has files then upload them
-        if ($request->hasFile('images')) {
-            $images = [];
-            foreach ($request->file('images') as $image) {
-                $imageName = $image->getClientOriginalName();
-                $image->move(public_path('images/gallery'), $imageName);
-                $images[] = 'images/gallery/' . $imageName;
-            }
-
-            // json_encode($images);
-            $updateGallery['images'] = json_encode($images);
-        }
-
-        // delete old images
-        if ($gallery->images) {
-            $oldImages = json_decode($gallery->images);
-            foreach ($oldImages as $oldImage) {
-                if (file_exists(public_path($oldImage))) {
-                    unlink(public_path($oldImage));
-                }
-            }
-        }
-
-        $gallery->fill($updateGallery);
-        $gallery->save();
+        $gallery->update($request->all());
 
         return response()->json([
             'message' => 'Gallery updated successfully',
