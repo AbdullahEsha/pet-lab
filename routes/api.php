@@ -36,6 +36,10 @@ Route::post('/user-details', [UserDetailsController::class, 'createUserDetails']
 // get all public articles
 Route::get('/articles/public', [ArticleController::class, 'getAllPublicArticles']);
 
+// Events
+Route::get('/events', [EventController::class, 'getAllEvents']);
+Route::get('/events/{id}', [EventController::class, 'getEventById']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // logout
     Route::post('/logout', [CredentialController::class, 'logout']);
@@ -71,10 +75,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // Managements
         Route::get('/managements', [ManagementController::class, 'getAllManagements']);
         Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
-
-        // Events
-        Route::get('/events', [EventController::class, 'getAllEvents']);
-        Route::get('/events/{id}', [EventController::class, 'getEventById']);
     });
 
     // middleware auth as admin

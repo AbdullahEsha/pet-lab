@@ -56,20 +56,18 @@ class GalleryController extends Controller
     // create gallery
     public function createGallery(Request $request)
     {
-        try {
-            // json_encode folder
-            $gallery = Gallery::create($request->all());
-            return response()->json([
-                'message' => 'Gallery created successfully',
-                'gallery' => $gallery
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Gallery not created',
-                'error' => $e->getMessage(),
-                'request' => $request->all()
-            ], 400);
-        }
+        $array = $request->folder;
+        $folderString = implode(', ', $array);
+
+        $request->merge([
+            'folder' => $folderString
+        ]);
+
+        $gallery = Gallery::create($request->all());
+        return response()->json([
+            'message' => 'Gallery created successfully',
+            'gallery' => $gallery
+        ]);
     }
     
 
@@ -82,6 +80,14 @@ class GalleryController extends Controller
             return response()->json([
                 'message' => 'Gallery not found'
             ], 404);
+        }
+
+        if($request->folder){
+            $array = $request->folder;
+            $folderString = implode(', ', $array);
+            $request->merge([
+                'folder' => $folderString
+            ]);
         }
 
         $gallery->update($request->all());

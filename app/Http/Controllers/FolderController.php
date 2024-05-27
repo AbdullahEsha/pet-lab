@@ -49,7 +49,16 @@ class FolderController extends Controller
     // Create folder
     public function createFolder(Request $request)
     {
-        $folder = Folder::create($request->all());
+        $createFolder = $request->all();
+        // If image has file then upload it
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('images/gallery'), $imageName);
+            $createFolder['image'] = 'images/gallery/'. $imageName;
+        }
+
+        $folder = Folder::create($createFolder);
 
         return response()->json([
             'message' => 'Folder created successfully',
@@ -60,6 +69,7 @@ class FolderController extends Controller
     // Update folder
     public function updateFolder(Request $request, $id)
     {
+        $updateFolder = $request->all();
         $folder = Folder::find($id);
 
         if (!$folder) {
@@ -68,7 +78,15 @@ class FolderController extends Controller
             ], 404);
         }
 
-        $folder->fill($request->all());
+        // If image has file then upload it
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('images/gallery'), $imageName);
+            $updateFolder['image'] = 'images/gallery/'. $imageName;
+        }
+
+        $folder->fill($updateFolder);
         $folder->save();
 
         return response()->json([

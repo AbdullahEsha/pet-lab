@@ -23,6 +23,7 @@ class UserDetails extends Model
         'nid_no',
         'passport_number',
         'nid_or_passport_image',
+        'nid_or_passport_image_back',
         'facebook_id_link',
         'aviary_name',
         'aviary_address',
@@ -32,7 +33,7 @@ class UserDetails extends Model
         'aviary_have_any_partner',
         'number_of_partner',
         'partners_details',
-        'isAgreed',
+        'isApproved',
     ];
 
     public function user()

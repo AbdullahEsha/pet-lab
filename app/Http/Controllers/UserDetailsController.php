@@ -44,12 +44,20 @@ class UserDetailsController extends Controller
     // create user details with user_id as foreign key
     public function createUserDetails(Request $request)
     {
+        $createUserDetails = $request->all();
         // if it has image file name nid_or_passport_image then store it in storage
         if ($request->hasFile('nid_or_passport_image')) {
             $file = $request->file('nid_or_passport_image');
             $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/images', $fileName);
-            $request->nid_or_passport_image = 'images/nid_or_passport_image/' . $fileName;
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $createUserDetails['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
+        }
+
+        if($request->hasFile('nid_or_passport_image_back')) {
+            $file = $request->file('nid_or_passport_image_back');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $createUserDetails['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
         }
 
         // validate request
@@ -61,8 +69,9 @@ class UserDetailsController extends Controller
             'blood_type' => 'required',
             'gender' => 'required',
             'nid_or_passport_image' => 'required',
+            'nid_or_passport_image_back' => 'required',
             'aviary_have_any_partner' => 'required',
-            'isAgreed' => 'required',
+            'isApproved' => 'required',
         ]);
 
         // if $request->user_id is not found in user table then return error

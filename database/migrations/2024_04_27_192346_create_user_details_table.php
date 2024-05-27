@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('nid_no')->nullable();
             $table->string('passport_number')->nullable();
             $table->string('nid_or_passport_image');
+            $table->string('nid_or_passport_image_back');
             $table->string('facebook_id_link')->nullable();
             $table->string('aviary_name')->nullable();
             $table->string('aviary_address')->nullable();
@@ -33,7 +34,7 @@ return new class extends Migration
             $table->boolean('aviary_have_any_partner');
             $table->integer('number_of_partner')->nullable();
             $table->json('partners_details')->nullable();
-            $table->boolean('isAgreed');
+            $table->boolean('isApproved');
             $table->timestamps();
         });
     }
