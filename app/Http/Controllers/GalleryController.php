@@ -28,6 +28,11 @@ class GalleryController extends Controller
             $galleries = Gallery::where('folder', request()->folder)->get();
             $galleriesCount = $galleries->count();
         }
+
+        // update folder from JSON to array
+        foreach ($galleries as $gallery) {
+            $gallery->folder = json_decode($gallery->folder);
+        }
         
         return response()->json([
             'message' => 'Galleries retrieved successfully',
@@ -47,6 +52,9 @@ class GalleryController extends Controller
             ], 404);
         }
 
+        // update folder from JSON to array
+        $gallery->folder = json_decode($gallery->folder);
+
         return response()->json([
             'message' => 'Gallery retrieved successfully',
             'gallery' => $gallery
@@ -56,14 +64,13 @@ class GalleryController extends Controller
     // create gallery
     public function createGallery(Request $request)
     {
-        $array = $request->folder;
-        $folderString = implode(', ', $array);
+        $createGallery = $request->all();
 
-        $request->merge([
-            'folder' => $folderString
-        ]);
+        // convert $createGallery['folder'] to JSON
+        $createGallery['folder'] = json_encode($createGallery['folder']);
 
-        $gallery = Gallery::create($request->all());
+        $gallery = Gallery::create($createGallery);
+
         return response()->json([
             'message' => 'Gallery created successfully',
             'gallery' => $gallery
@@ -80,14 +87,6 @@ class GalleryController extends Controller
             return response()->json([
                 'message' => 'Gallery not found'
             ], 404);
-        }
-
-        if($request->folder){
-            $array = $request->folder;
-            $folderString = implode(', ', $array);
-            $request->merge([
-                'folder' => $folderString
-            ]);
         }
 
         $gallery->update($request->all());

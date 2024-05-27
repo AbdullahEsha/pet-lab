@@ -17,6 +17,12 @@ class UserDetailsController extends Controller
         // user table id is the foreign key in user_details table as user_id
         $userDetails = UserDetails::with('user')->paginate(request('per_page', 10));
 
+        // json decode bird_species_collection and partners_details
+        foreach ($userDetails as $userDetail) {
+            $userDetail->bird_species_collection = json_decode($userDetail->bird_species_collection);
+            $userDetail->partners_details = json_decode($userDetail->partners_details);
+        }
+
         return response()->json([
             'message' => 'User details retrieved successfully',
             'userDetails' => $userDetails
@@ -34,6 +40,10 @@ class UserDetailsController extends Controller
                 'message' => 'User details not found'
             ], 404);
         }
+
+        // json decode bird_species_collection and partners_details
+        $userDetails->bird_species_collection = json_decode($userDetails->bird_species_collection);
+        $userDetails->partners_details = json_decode($userDetails->partners_details);
 
         return response()->json([
             'message' => 'User details retrieved successfully',
@@ -88,8 +98,12 @@ class UserDetailsController extends Controller
             ], 400);
         }
 
+        // json encode bird_species_collection and partners_details
+        $createUserDetails['bird_species_collection'] = json_encode($request->bird_species_collection);
+        $createUserDetails['partners_details'] = json_encode($request->partners_details);
+
         // create user details
-        $userDetails = UserDetails::create($request->all());
+        $userDetails = UserDetails::create($createUserDetails);
 
         return response()->json([
             'message' => 'User details created successfully',
