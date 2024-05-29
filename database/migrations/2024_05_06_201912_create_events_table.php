@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('description')->nullable();
             $table->string('image')->nullable();
+            $table->string('event_type');
             $table->date('expires_at');
             $table->double('fees', 8, 2)->nullable(); // 8 digits in total, 2 after the decimal point
             $table->timestamps();

@@ -54,7 +54,8 @@ class UserDetailsController extends Controller
     // create user details with user_id as foreign key
     public function createUserDetails(Request $request)
     {
-        $createUserDetails = $request->all();
+        try {
+            $createUserDetails = $request->all();
         // if it has image file name nid_or_passport_image then store it in storage
         if ($request->hasFile('nid_or_passport_image')) {
             $file = $request->file('nid_or_passport_image');
@@ -70,32 +71,12 @@ class UserDetailsController extends Controller
             $createUserDetails['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
         }
 
-        // validate request
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'father_name' => 'required',
-            'mother_name' => 'required',
-            'date_of_birth' => 'required',
-            'blood_type' => 'required',
-            'gender' => 'required',
-            'nid_or_passport_image' => 'required',
-            'nid_or_passport_image_back' => 'required',
-            'aviary_have_any_partner' => 'required',
-            'isApproved' => 'required',
-        ]);
-
+        
         // if $request->user_id is not found in user table then return error
         if(!$request->user_id) {
             return response()->json([
                 'message' => 'User not found. Please provide a valid user_id.'
             ], 404);
-        }
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 400);
         }
 
         // json encode bird_species_collection and partners_details
@@ -109,6 +90,12 @@ class UserDetailsController extends Controller
             'message' => 'User details created successfully',
             'userDetails' => $userDetails
         ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'User details not created. Please provide all required fields.',
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
 
     // update user details by user_id

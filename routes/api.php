@@ -22,6 +22,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ParticipantController;
 
 // credentials
 Route::post('/register', [CredentialController::class, 'register']);
@@ -39,6 +40,10 @@ Route::get('/articles/public', [ArticleController::class, 'getAllPublicArticles'
 // Events
 Route::get('/events', [EventController::class, 'getAllEvents']);
 Route::get('/events/{id}', [EventController::class, 'getEventById']);
+
+// Participants
+Route::get('/participants/{id}', [ParticipantController::class, 'getParticipantById']);
+Route::post('/participants', [ParticipantController::class, 'createParticipant']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // logout
@@ -156,5 +161,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/events', [EventController::class, 'createEvent']);
         Route::put('/events/{id}', [EventController::class, 'updateEvent']);
         Route::delete('/events/{id}', [EventController::class, 'deleteEvent']);
+
+        // Participants
+        Route::get('/participants', [ParticipantController::class, 'getAllParticipants']);
+        Route::put('/participants/{id}', [ParticipantController::class, 'updateParticipant']);
+        Route::delete('/participants/{id}', [ParticipantController::class, 'deleteParticipant']);
     });
 });

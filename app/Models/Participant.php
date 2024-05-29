@@ -20,4 +20,11 @@ class Participant extends Model
         'event_id',
         'isApproved'
     ];
+
+    // Define the relationship with the Event model
+    // in the participants table, the event_id column is used to store the id of the event that the participant is associated with
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
 }

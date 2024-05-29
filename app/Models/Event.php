@@ -15,6 +15,7 @@ class event extends Model
         'title',
         'description',
         'image',
+        'event_type',
         'expires_at',
         'fees'
     ];

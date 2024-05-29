@@ -4,15 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Participant;
-
-// - id: int
-// - name: string
-// - address: string
-// - image: string
-// - t shirt size: string
-// - data: json
-// - event id: string
-// - isApproved: string
+use App\Models\Event;
 
 class ParticipantController extends Controller
 {
@@ -45,8 +37,8 @@ class ParticipantController extends Controller
     // get participant by id
     public function getParticipantById($id)
     {
-        $participant = Participant::find($id);
-
+        $participant = Participant::with('event')->find($id);
+             
         // decode data from json
         $participant->data = json_decode($participant->data);
 
