@@ -114,6 +114,7 @@ class UserDetailsController extends Controller
     // update user details by user_id
     public function updateUserDetails(Request $request, $user_id)
     {
+        $updtUserDetails = $request->all();
         // get user details by user_id
         $userDetails = UserDetails::where('user_id', $user_id)->first();
 
@@ -127,12 +128,32 @@ class UserDetailsController extends Controller
         if ($request->hasFile('nid_or_passport_image')) {
             $file = $request->file('nid_or_passport_image');
             $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/images', $fileName);
-            $request->nid_or_passport_image = 'images/nid_or_passport_image/' . $fileName;
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $updtUserDetails['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
+        }
+        
+        if($request->hasFile('nid_or_passport_image_back')) {
+            $file = $request->file('nid_or_passport_image_back');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $updtUserDetails['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
+        }
+
+        // delete old image if new image is uploaded
+        if ($request->hasFile('nid_or_passport_image')) {
+            if (file_exists(public_path("images/nid_or_passport/{$userDetails->nid_or_passport_image}"))) {
+                unlink(public_path("images/nid_or_passport/{$userDetails->nid_or_passport_image}"));
+            }
+        }
+
+        if ($request->hasFile('nid_or_passport_image_back')) {
+            if (file_exists(public_path("images/nid_or_passport/{$userDetails->nid_or_passport_image_back}"))) {
+                unlink(public_path("images/nid_or_passport/{$userDetails->nid_or_passport_image_back}"));
+            }
         }
 
         // update user details
-        $userDetails->update($request->all());
+        $userDetails->update($updtUserDetails);
 
         return response()->json([
             'message' => 'User details updated successfully',
