@@ -15,7 +15,9 @@ class Participant extends Model
         'name',
         'address',
         'image',
-        'payment_status',
-        'event_id'
+        't_shirt_size',
+        'data',
+        'event_id',
+        'isApproved'
     ];
 }

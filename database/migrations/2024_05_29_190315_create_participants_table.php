@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('image')->nullable();
-            $table->boolean('payment_status');
-            $table->integer('event_id')->unsigned();
+            $table->string('t_shirt_size')->nullable();
+            $table->json('data')->nullable();
+            $table->string('event_id');
+            $table->string('isApproved');
             $table->timestamps();
         });
     }
