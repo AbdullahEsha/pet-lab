@@ -14,22 +14,34 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
+            $table->string('name_bn')->unique();
+            $table->string('email')->nullable();
+            $table->string('password')->nullable();
             $table->string('image')->nullable();
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->string('address');
             $table->string('city');
+            $table->string('father_name');
+            $table->string('mother_name');
+            $table->date('date_of_birth');
+            $table->string('blood_type');
+            $table->string('gender');
+            $table->string('profession')->nullable();
+            $table->string('name_of_institution')->nullable();
+            $table->string('nid_or_passport_image');
+            $table->string('nid_or_passport_image_back');
+            $table->string('facebook_id_link')->nullable();
             $table->string('role');
-            $table->string('labId')->nullable();
+            $table->string('labId')->unique();
             $table->timestamp('subExpDate')->nullable();
+            $table->timestamp('isBva')->nullable();
             $table->string('isApproved')->default('pending');
             $table->string('token')->nullable();
             $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->string('labId')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });

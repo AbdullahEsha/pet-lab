@@ -34,7 +34,7 @@ class CredentialController extends Controller
     public function login(Request $request)
     {
         // set data so that i can call it by using this "$request->user()"
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('labId', 'password');
 
         if (!Auth::attempt($credentials)) {
             return response()->json([
