@@ -21,7 +21,9 @@ class CredentialController extends Controller
             $registerUser['image'] = 'images/user/' . $imageName;
         }
         // hash the password
-        $registerUser['password'] = Hash::make($registerUser['password']);
+        if(isset($registerUser['password'])){
+            $registerUser['password'] = Hash::make($registerUser['password']);
+        }
 
         $user = User::create($registerUser);
 
@@ -34,7 +36,7 @@ class CredentialController extends Controller
     public function login(Request $request)
     {
         // set data so that i can call it by using this "$request->user()"
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('labId', 'password') ?? $request->only('email', 'password');
 
         if (!Auth::attempt($credentials)) {
             return response()->json([

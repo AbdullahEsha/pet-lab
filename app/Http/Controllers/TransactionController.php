@@ -64,6 +64,14 @@ class TransactionController extends Controller
             $createTransaction['image'] = 'images/transaction/' . $imageName;
         }
 
+        if(isset($createTransaction['user_id'])){
+            $createTransaction['user_id'] = $createTransaction['user_id'];
+        }
+        
+        if(isset($createTransaction['participant_id'])){
+            $createTransaction['participant_id'] = $createTransaction['participant_id'];
+        }
+
         $transaction = Transaction::create($createTransaction);
 
         return response()->json([

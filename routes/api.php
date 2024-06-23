@@ -23,6 +23,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ParticipantController;
+use App\Http\Controllers\SliderController;
 
 // credentials
 Route::post('/register', [CredentialController::class, 'register']);
@@ -45,6 +46,20 @@ Route::get('/events/{id}', [EventController::class, 'getEventById']);
 Route::get('/participants/{id}', [ParticipantController::class, 'getParticipantById']);
 Route::post('/participants', [ParticipantController::class, 'createParticipant']);
 
+// Sliders
+Route::get('/sliders', [SliderController::class, 'getAllSliders']);
+
+// Announcements
+Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
+
+// latest announcement
+Route::get('/announcements/latest', [AnnouncementController::class, 'getLatestAnnouncement']);
+Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
+
+// Managements
+Route::get('/managements', [ManagementController::class, 'getAllManagements']);
+Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // logout
     Route::post('/logout', [CredentialController::class, 'logout']);
@@ -62,12 +77,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/user-details/{user_id}', [UserDetailsController::class, 'getUserDetailsByUserId']);
         Route::put('/user-details/{user_id}', [UserDetailsController::class, 'updateUserDetails']);
 
-        // Announcements
-        Route::get('/announcements', [AnnouncementController::class, 'getAllAnnouncements']);
-        // latest announcement
-        Route::get('/announcements/latest', [AnnouncementController::class, 'getLatestAnnouncement']);
-        Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnouncementById']);
-
         // Articles
         Route::get('/articles', [ArticleController::class, 'getAllArticles']);
         Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
@@ -76,10 +85,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // Galleries
         Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
         Route::get('/galleries/{id}', [GalleryController::class, 'getGalleryById']);
-
-        // Managements
-        Route::get('/managements', [ManagementController::class, 'getAllManagements']);
-        Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
     });
 
     // middleware auth as admin
@@ -166,5 +171,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/participants', [ParticipantController::class, 'getAllParticipants']);
         Route::put('/participants/{id}', [ParticipantController::class, 'updateParticipant']);
         Route::delete('/participants/{id}', [ParticipantController::class, 'deleteParticipant']);
+
+        // Sliders
+        Route::post('/sliders', [SliderController::class, 'createSlider']);
+        Route::put('/sliders/{id}', [SliderController::class, 'updateSliderById']);
+        Route::delete('/sliders/{id}', [SliderController::class, 'deleteSliderById']);
     });
 });

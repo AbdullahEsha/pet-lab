@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('transaction_type');
             $table->string('transaction_status');
             $table->string('image');
-            $table->string('user_id');
+            $table->string('user_id')->nullable();
+            $table->string('participant_id')->nullable();
             $table->timestamps();
         });
     }

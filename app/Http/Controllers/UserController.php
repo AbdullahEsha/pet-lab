@@ -63,7 +63,9 @@ class UserController extends Controller
         }
 
         // hash password
-        $request->password = Hash::make($request->password);
+        if(isset($createUser['password'])){
+            $createUser['password'] = Hash::make($createUser['password']);
+        }
 
         // create user
         $user = User::create($createUser);

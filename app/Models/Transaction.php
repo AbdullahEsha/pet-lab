@@ -17,6 +17,7 @@ class Transaction extends Model
         'transaction_type',
         'transaction_status',
         'image',
-        'user_id'
+        'user_id',
+        'participant_id'
     ];
 }
