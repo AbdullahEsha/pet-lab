@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TransactionController extends Controller
 {
@@ -147,6 +148,19 @@ class TransactionController extends Controller
     public function getTransactionsByUserId($user_id)
     {
         $transactions = Transaction::where('user_id', $user_id)->get();
+        $transactionsCount = $transactions->count();
+
+        return response()->json([
+            'message' => 'Transactions retrieved successfully',
+            'count' => $transactionsCount,
+            'transactions' => $transactions
+        ]);
+    }
+
+    // get transactions by participant id
+    public function getTransactionsByParticipantId($participant_id)
+    {
+        $transactions = Transaction::where('participant_id', $participant_id)->get();
         $transactionsCount = $transactions->count();
 
         return response()->json([

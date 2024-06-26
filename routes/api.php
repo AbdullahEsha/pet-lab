@@ -24,6 +24,7 @@ use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\SliderController;
+use App\Http\Controllers\TermsController;
 
 // credentials
 Route::post('/register', [CredentialController::class, 'register']);
@@ -59,6 +60,10 @@ Route::get('/announcements/{id}', [AnnouncementController::class, 'getAnnounceme
 // Managements
 Route::get('/managements', [ManagementController::class, 'getAllManagements']);
 Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
+
+// Terms
+Route::get('/terms', [TermsController::class, 'getAllTerms']);
+Route::get('/terms/{id}', [TermsController::class, 'getTermById']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // logout
@@ -152,6 +157,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/transactions', [TransactionController::class, 'getAllTransactions']);
         Route::get('/transactions/{id}', [TransactionController::class, 'getTransactionById']);
         Route::get('/transactions/user/{id}', [TransactionController::class, 'getTransactionsByUserId']);
+        Route::get('/transactions/participant/{id}', [TransactionController::class, 'getTransactionsByParticipantId']);
         Route::put('/transactions/{id}', [TransactionController::class, 'updateTransaction']);
         Route::delete('/transactions/{id}', [TransactionController::class, 'deleteTransaction']);
 
@@ -176,5 +182,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/sliders', [SliderController::class, 'createSlider']);
         Route::put('/sliders/{id}', [SliderController::class, 'updateSliderById']);
         Route::delete('/sliders/{id}', [SliderController::class, 'deleteSliderById']);
+
+        // Terms
+        Route::post('/terms', [TermsController::class, 'createTerm']);
+        Route::put('/terms/{id}', [TermsController::class, 'updateTerm']);
+        Route::delete('/terms/{id}', [TermsController::class, 'deleteTerm']);
     });
 });
