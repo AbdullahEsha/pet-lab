@@ -16,7 +16,9 @@ class Participant extends Model
         'address',
         'image',
         't_shirt_size',
+        'phone',
         'data',
+        'isGuest',
         'event_id',
         'isApproved'
     ];

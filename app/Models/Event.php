@@ -16,7 +16,11 @@ class event extends Model
         'description',
         'image',
         'event_type',
-        'expires_at',
-        'fees'
+        'location',
+        'fees_user',
+        'fees_guest',
+        'starts_at',
+        'ends_at',
+        'expires_at'
     ];
 }

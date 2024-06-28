@@ -17,8 +17,12 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('image')->nullable();
             $table->string('event_type');
+            $table->string('location');
+            $table->double('fees_user', 8, 2)->nullable(); // 8 digits in total, 2 after the decimal point
+            $table->double('fees_guest', 8, 2)->nullable(); // 8 digits in total, 2 after the decimal point
+            $table->date('starts_at');
+            $table->date('ends_at');
             $table->date('expires_at');
-            $table->double('fees', 8, 2)->nullable(); // 8 digits in total, 2 after the decimal point
             $table->timestamps();
         });
     }

@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('address');
             $table->string('image')->nullable();
             $table->string('t_shirt_size')->nullable();
+            $table->string('phone');
             $table->json('data')->nullable();
+            $table->boolean('isGuest');
             $table->string('event_id');
             $table->string('isApproved');
             $table->timestamps();
