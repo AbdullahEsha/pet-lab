@@ -43,7 +43,7 @@ class User extends Authenticatable
         'subExpDate',
         'isBva',
         'isApproved',
-        'token'
+        'token',
     ];
 
     /**

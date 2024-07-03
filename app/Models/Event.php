@@ -14,13 +14,17 @@ class event extends Model
     protected $fillable = [
         'title',
         'description',
-        'image',
         'event_type',
         'location',
         'fees_user',
         'fees_guest',
+        'tShirtSize',
+        'pickUpLocation',
+        'isTshirt',
+        'allow_birds',
+        'allow_guest',
         'starts_at',
         'ends_at',
-        'expires_at'
+        'expires_at',
     ];
 }

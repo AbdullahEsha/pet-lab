@@ -54,6 +54,24 @@ class ParticipantController extends Controller
         ]);
     }
 
+    // get participant by event_id
+    public function getParticipantByEventId($id)
+    {
+        $participants = Participant::where('event_id', $id)->get();
+        $participantscount = $participants->count();
+
+        // decode data from json
+        foreach ($participants as $participant) {
+            $participant->data = json_decode($participant->data);
+        }
+
+        return response()->json([
+            'message' => 'Participants retrieved successfully',
+            'count' => $participantscount,
+            'participants' => $participants
+        ]);
+    }
+
     // create participant
     public function createParticipant(Request $request)
     {

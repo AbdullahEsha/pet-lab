@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('role');
             $table->string('labId')->unique();
             $table->timestamp('subExpDate')->nullable();
-            $table->timestamp('isBva')->nullable();
+            $table->boolean('isBva')->nullable();
             $table->string('isApproved')->default('pending');
             $table->string('token')->nullable();
             $table->timestamps();

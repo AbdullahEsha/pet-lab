@@ -46,6 +46,7 @@ Route::get('/events/{id}', [EventController::class, 'getEventById']);
 // Participants
 Route::get('/participants/{id}', [ParticipantController::class, 'getParticipantById']);
 Route::post('/participants', [ParticipantController::class, 'createParticipant']);
+Route::get('/participants/event/{id}', [ParticipantController::class, 'getParticipantByEventId']);
 
 // Sliders
 Route::get('/sliders', [SliderController::class, 'getAllSliders']);
@@ -64,6 +65,11 @@ Route::get('/managements/{id}', [ManagementController::class, 'getManagementById
 // Terms
 Route::get('/terms', [TermsController::class, 'getAllTerms']);
 Route::get('/terms/{id}', [TermsController::class, 'getTermById']);
+
+// Folders
+Route::get('/folders', [FolderController::class, 'getAllFolders']);
+Route::get('/folders/{id}', [FolderController::class, 'getFolderById']);
+
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // logout
@@ -86,10 +92,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/articles', [ArticleController::class, 'getAllArticles']);
         Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
         Route::get('/articles/category/{category}', [ArticleController::class, 'getArticlesByCategory']);
-
-        // Galleries
-        Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
-        Route::get('/galleries/{id}', [GalleryController::class, 'getGalleryById']);
     });
 
     // middleware auth as admin
@@ -128,8 +130,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/sub-categories/{id}', [SubCategoryController::class, 'deleteSubCategory']);
 
         // Folders
-        Route::get('/folders', [FolderController::class, 'getAllFolders']);
-        Route::get('/folders/{id}', [FolderController::class, 'getFolderById']);
         Route::post('/folders', [FolderController::class, 'createFolder']);
         Route::put('/folders/{id}', [FolderController::class, 'updateFolder']);
         Route::delete('/folders/{id}', [FolderController::class, 'deleteFolder']);
@@ -140,8 +140,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/galleries/{id}', [GalleryController::class, 'deleteGallery']);
 
         // Managements
-        Route::get('/managements', [ManagementController::class, 'getAllManagements']);
-        Route::get('/managements/{id}', [ManagementController::class, 'getManagementById']);
         Route::post('/managements', [ManagementController::class, 'createManagement']);
         Route::put('/managements/{id}', [ManagementController::class, 'updateManagement']);
         Route::delete('/managements/{id}', [ManagementController::class, 'deleteManagement']);
