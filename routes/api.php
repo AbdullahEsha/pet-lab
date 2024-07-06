@@ -70,6 +70,9 @@ Route::get('/terms/{id}', [TermsController::class, 'getTermById']);
 Route::get('/folders', [FolderController::class, 'getAllFolders']);
 Route::get('/folders/{id}', [FolderController::class, 'getFolderById']);
 
+// Payments
+Route::get('/payments', [PaymentController::class, 'getAllPayments']);
+
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // logout
@@ -160,7 +163,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/transactions/{id}', [TransactionController::class, 'deleteTransaction']);
 
         // Payments
-        Route::get('/payments', [PaymentController::class, 'getAllPayments']);
         Route::get('/payments/{id}', [PaymentController::class, 'getPaymentById']);
         Route::post('/payments', [PaymentController::class, 'createPayment']);
         Route::put('/payments/{id}', [PaymentController::class, 'updatePayment']);

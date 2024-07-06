@@ -17,7 +17,8 @@ class CheckExpiryDate
     {
         try {
             $user = $request->user();
-            if ($user->subExpDate !== null) {
+            // check if user is not admin and subscription expired
+            if ($user->role !== 'admin') {
                 $subExpDate = strtotime($user->subExpDate);
                 $currentDate = strtotime(date('Y-m-d'));
                 if ($subExpDate < $currentDate) {

@@ -6,12 +6,6 @@ use App\Models\Event;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-// 'title',
-//         'description',
-//         'image',
-//         'expires_at',
-//         'fees'
-
 
 class EventController extends Controller
 {
@@ -20,6 +14,11 @@ class EventController extends Controller
     {
         $events = Event::all();
         $eventsCount = $events->count();
+
+        // decode birdData json field
+        foreach ($events as $event) {
+            $event->birdData = json_decode($event->birdData);
+        }
 
         // If perams count=true then return only count of events
         if (request()->count) {
@@ -40,6 +39,9 @@ class EventController extends Controller
     public function getEventById($id)
     {
         $event = Event::find($id);
+
+        // decode birdData json field
+        $event->birdData = json_decode($event->birdData);
 
         if (!$event) {
             return response()->json([
@@ -64,6 +66,9 @@ class EventController extends Controller
             $image->move(public_path('images/event'), $imageName);
             $createEvent['image'] = 'images/event/' . $imageName;
         }
+
+        // birdData is json field
+        $createEvent['birdData'] = json_encode($createEvent['birdData']);
 
         $event = Event::create($createEvent);
 
@@ -91,6 +96,11 @@ class EventController extends Controller
             $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/event'), $imageName);
             $updateEvent['image'] = 'images/event/' . $imageName;
+        }
+
+        // birdData is json field
+        if(isset($updateEvent['birdData'])) {
+            $updateEvent['birdData'] = json_encode($updateEvent['birdData']);
         }
 
         $event->fill($updateEvent);

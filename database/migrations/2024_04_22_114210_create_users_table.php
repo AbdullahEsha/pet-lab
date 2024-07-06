@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('nid_or_passport_image_back');
             $table->string('facebook_id_link')->nullable();
             $table->string('role');
-            $table->string('labId')->unique();
+            $table->string('labId');
             $table->timestamp('subExpDate')->nullable();
             $table->boolean('isBva')->nullable();
             $table->string('isApproved')->default('pending');
