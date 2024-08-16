@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('event_type');
             $table->string('location');
+            $table->string('image')->nullable();
             $table->double('fees_user', 8, 2)->nullable(); // 8 digits in total, 2 after the decimal point
             $table->double('fees_guest', 8, 2)->nullable(); // 8 digits in total, 2 after the decimal point
             $table->string('tShirtSize')->nullable();
