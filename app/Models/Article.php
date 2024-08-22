@@ -18,6 +18,7 @@ class Article extends Model
         'description',
         'category',
         'sub_category',
+        'description_image',
         'is_public',
     ];
 }

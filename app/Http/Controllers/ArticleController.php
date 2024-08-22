@@ -75,6 +75,9 @@ class ArticleController extends Controller
     // Create article
     public function createArticle(Request $request)
     {
+        // title, description, category, subcategory, is_public, image
+        // image in discritpion: description_image as array of file
+
         $createArticle = $request->all();
         // if article has an image
         if ($request->hasFile('image')) {
@@ -82,6 +85,19 @@ class ArticleController extends Controller
             $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/articles'), $imageName);
             $createArticle['image'] = 'images/articles/' . $imageName;
+        }
+
+        // if article has an images in description array 
+        if ($request->hasFile('description_image')) {
+            $descriptionImages = $request->file('description_image');
+            $descriptionImagesArray = [];
+            foreach ($descriptionImages as $descriptionImage) {
+                $descriptionImageName = $descriptionImage->getClientOriginalName();
+                $descriptionImage->move(public_path('images/articles'), $descriptionImageName);
+                $descriptionImagesArray[] = 'images/articles/' . $descriptionImageName;
+            }
+            // also encode the array to json
+            $createArticle['description_image'] = json_encode($descriptionImagesArray);
         }
 
         $article = Article::create($createArticle);
