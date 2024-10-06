@@ -38,6 +38,7 @@ Route::post('/user-details', [UserDetailsController::class, 'createUserDetails']
 
 // get all public articles
 Route::get('/articles/public', [ArticleController::class, 'getAllPublicArticles']);
+Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
 
 // Events
 Route::get('/events', [EventController::class, 'getAllEvents']);
@@ -73,6 +74,9 @@ Route::get('/folders/{id}', [FolderController::class, 'getFolderById']);
 // Payments
 Route::get('/payments', [PaymentController::class, 'getAllPayments']);
 
+// Galleries
+Route::get('/galleries', [GalleryController::class, 'getAllGalleries']);
+
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // logout
@@ -93,7 +97,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
         // Articles
         Route::get('/articles', [ArticleController::class, 'getAllArticles']);
-        Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
         Route::get('/articles/category/{category}', [ArticleController::class, 'getArticlesByCategory']);
     });
 

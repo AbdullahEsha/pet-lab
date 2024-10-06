@@ -107,13 +107,12 @@ class UserController extends Controller
                 return response()->json([
                     'message' => 'You can not update subExpDate of other users'
                 ], 400);
-            
         }
 
         // password hash if password is updated
         // one user can not update password of other users even if he is admin
         if ($request->password) {
-            if (Auth::user()->id != $user->id) {
+            if (Auth::user()->role != 'admin' && Auth::user()->id != $user->id) {
                 return response()->json([
                     'message' => 'You can not update password of other users'
                 ], 400);

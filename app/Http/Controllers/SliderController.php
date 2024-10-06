@@ -30,21 +30,21 @@ class SliderController extends Controller
 
     public function createSlider(Request $request)
     {
-        $createslider = $request->all();
+        $slider = $request->all();
 
         // upload image
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/slider'), $imageName);
-            $createslider['image'] = 'images/slider/' . $imageName;
+            $slider['image'] = 'images/slider/'. $imageName;
         }
 
-        $slider = Slider::create($createslider);
+        $newSlider = Slider::create($slider);
 
         return response()->json([
             'message' => 'Slider created successfully',
-            'slider' => $slider
+            'slider' => $newSlider
         ]);
     }
 
@@ -66,7 +66,7 @@ class SliderController extends Controller
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/slider'), $imageName);
-            $updateslider['image'] = 'images/slider/' . $imageName;
+            $updateslider['image'] = 'images/slider/'. $imageName;
 
             // delete old image
             $imagePath = public_path($slider->image);
