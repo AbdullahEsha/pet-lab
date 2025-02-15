@@ -63,7 +63,7 @@ class UserController extends Controller
         }
 
         // hash password
-        if(isset($createUser['password'])){
+        if (isset($createUser['password'])) {
             $createUser['password'] = Hash::make($createUser['password']);
         }
 
@@ -102,24 +102,24 @@ class UserController extends Controller
         }
 
         // can not update subExpDate
-        if ($request->subExpDate && Auth::user()->id != $user->id){
-            // authencate user 
-                return response()->json([
-                    'message' => 'You can not update subExpDate of other users'
-                ], 400);
-        }
+        // if ($request->subExpDate && Auth::user()->id != $user->id){
+        //     // authencate user
+        //         return response()->json([
+        //             'message' => 'You can not update subExpDate of other users'
+        //         ], 400);
+        // }
 
         // password hash if password is updated
         // one user can not update password of other users even if he is admin
-        if ($request->password) {
-            if (Auth::user()->role != 'admin' && Auth::user()->id != $user->id) {
-                return response()->json([
-                    'message' => 'You can not update password of other users'
-                ], 400);
-            }
-            $updateUser['password'] = Hash::make($request->password);
-        }
-        
+        // if ($request->password) {
+        //     if (Auth::user()->role != 'admin' && Auth::user()->id != $user->id) {
+        //         return response()->json([
+        //             'message' => 'You can not update password of other users'
+        //         ], 400);
+        //     }
+        //     $updateUser['password'] = Hash::make($request->password);
+        // }
+
         $user->update($updateUser);
 
         return response()->json([
