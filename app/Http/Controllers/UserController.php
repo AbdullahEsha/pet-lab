@@ -76,50 +76,58 @@ class UserController extends Controller
         ]);
     }
 
-    // update user
     public function updateUser(Request $request, $id)
     {
         $updateUser = $request->all();
         $user = User::find($id);
 
-        // if image is updated
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = $image->getClientOriginalName();
-            $image->move(public_path('images/users'), $imageName);
-            $updateUser['image'] = 'images/users/' . $imageName;
-        }
-
-        // and delete the old image
-        if (file_exists(public_path($user->image))) {
-            unlink(public_path($user->image));
-        }
-
+        // Check if the user exists
         if (!$user) {
             return response()->json([
                 'message' => 'User not found'
             ], 404);
         }
 
-        // can not update subExpDate
-        // if ($request->subExpDate && Auth::user()->id != $user->id){
-        //     // authencate user
-        //         return response()->json([
-        //             'message' => 'You can not update subExpDate of other users'
-        //         ], 400);
-        // }
+        // Prevent normal users from updating admin details
+        if (Auth::user()->role !== 'admin' && $user->role === 'admin') {
+            return response()->json([
+                'message' => 'You are not authorized to update an admin\'s details'
+            ], 403);
+        }
 
-        // password hash if password is updated
-        // one user can not update password of other users even if he is admin
-        // if ($request->password) {
-        //     if (Auth::user()->role != 'admin' && Auth::user()->id != $user->id) {
-        //         return response()->json([
-        //             'message' => 'You can not update password of other users'
-        //         ], 400);
-        //     }
-        //     $updateUser['password'] = Hash::make($request->password);
-        // }
+        // Check if the authenticated user is authorized to update this user
+        if (Auth::user()->role !== 'admin' && Auth::user()->id !== $user->id) {
+            return response()->json([
+                'message' => 'You are not authorized to update this user'
+            ], 403);
+        }
 
+        // Handle image update
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move(public_path('images/users'), $imageName);
+            $updateUser['image'] = 'images/users/' . $imageName;
+
+            // Delete the old image if it exists
+            if ($user->image && file_exists(public_path($user->image))) {
+                unlink(public_path($user->image));
+            }
+        }
+
+        // Handle password update
+        if ($request->password) {
+            // Only allow the user or an admin to update the password
+            if (Auth::user()->role === 'admin' || Auth::user()->id === $user->id) {
+                $updateUser['password'] = Hash::make($request->password);
+            } else {
+                return response()->json([
+                    'message' => 'You are not authorized to update this user\'s password'
+                ], 403);
+            }
+        }
+
+        // Update the user
         $user->update($updateUser);
 
         return response()->json([
