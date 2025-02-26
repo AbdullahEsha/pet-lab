@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-
 use App\Models\User;
 use App\Models\UserDetails;
 
@@ -62,6 +60,20 @@ class UserController extends Controller
             $createUser['image'] = 'images/users/' . $imageName;
         }
 
+        if ($request->hasFile('nid_or_passport_image')) {
+            $file = $request->file('nid_or_passport_image');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $createUser['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
+        }
+
+        if ($request->hasFile('nid_or_passport_image_back')) {
+            $file = $request->file('nid_or_passport_image_back');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $createUser['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
+        }
+
         // hash password
         if (isset($createUser['password'])) {
             $createUser['password'] = Hash::make($createUser['password']);
@@ -102,32 +114,49 @@ class UserController extends Controller
             ], 403);
         }
 
-        // Handle image update
+        // upload image
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
             $image->move(public_path('images/users'), $imageName);
             $updateUser['image'] = 'images/users/' . $imageName;
 
-            // Delete the old image if it exists
-            if ($user->image && file_exists(public_path($user->image))) {
+            // delete old image
+            if (file_exists(public_path($user->image))) {
                 unlink(public_path($user->image));
             }
         }
 
-        // Handle password update
-        if ($request->password) {
-            // Only allow the user or an admin to update the password
-            if (Auth::user()->role === 'admin' || Auth::user()->id === $user->id) {
-                $updateUser['password'] = Hash::make($request->password);
-            } else {
-                return response()->json([
-                    'message' => 'You are not authorized to update this user\'s password'
-                ], 403);
+        if ($request->hasFile('nid_or_passport_image')) {
+            $file = $request->file('nid_or_passport_image');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $updateUser['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
+
+            // delete old image
+            if (file_exists(public_path($user->nid_or_passport_image))) {
+                unlink(public_path($user->nid_or_passport_image));
             }
         }
 
-        // Update the user
+        if ($request->hasFile('nid_or_passport_image_back')) {
+            $file = $request->file('nid_or_passport_image_back');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $updateUser['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
+
+            // delete old image
+            if (file_exists(public_path($user->nid_or_passport_image_back))) {
+                unlink(public_path($user->nid_or_passport_image_back));
+            }
+        }
+
+        // hash password
+        if (isset($updateUser['password'])) {
+            $updateUser['password'] = Hash::make($updateUser['password']);
+        }
+
+        // Only update the fields that are present in the request body and ignore the rest
         $user->update($updateUser);
 
         return response()->json([

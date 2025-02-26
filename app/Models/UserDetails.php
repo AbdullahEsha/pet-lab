@@ -20,7 +20,7 @@ class UserDetails extends Model
         'aviary_facebook_link',
         'aviary_have_any_partner',
         'number_of_partner',
-        'partners_details',
+        'partners_details'
     ];
 
     public function user()

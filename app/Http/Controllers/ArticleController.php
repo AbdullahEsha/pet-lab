@@ -59,6 +59,23 @@ class ArticleController extends Controller
         ]);
     }
 
+    // Get article by public id
+    public function getArticleByPublicId($id)
+    {
+        $article = Article::where('id', $id)->first();
+
+        if (!$article) {
+            return response()->json([
+                'message' => 'Article not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Article retrieved successfully',
+            'article' => $article
+        ]);
+    }
+
     // Get articles by category
     public function getArticlesByCategory($category)
     {
@@ -75,37 +92,52 @@ class ArticleController extends Controller
     // Create article
     public function createArticle(Request $request)
     {
-        // title, description, category, subcategory, is_public, image
-        // image in discritpion: description_image as array of file
+        try {
+            $createArticle = $request->all();
 
-        $createArticle = $request->all();
-        // if article has an image
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = $image->getClientOriginalName();
-            $image->move(public_path('images/articles'), $imageName);
-            $createArticle['image'] = 'images/articles/' . $imageName;
-        }
-
-        // if article has an images in description array 
-        if ($request->hasFile('description_image')) {
-            $descriptionImages = $request->file('description_image');
-            $descriptionImagesArray = [];
-            foreach ($descriptionImages as $descriptionImage) {
-                $descriptionImageName = $descriptionImage->getClientOriginalName();
-                $descriptionImage->move(public_path('images/articles'), $descriptionImageName);
-                $descriptionImagesArray[] = 'images/articles/' . $descriptionImageName;
+            // Handle single image upload
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('images/articles'), $imageName);
+                $createArticle['image'] = 'images/articles/' . $imageName;
             }
-            // also encode the array to json
-            $createArticle['description_image'] = json_encode($descriptionImagesArray);
+
+            // Handle multiple images for description_image
+            if ($request->hasFile('description_image')) {
+                $descriptionImagesArray = [];
+                $files = $request->file('description_image');
+
+                // Ensure $files is always an array
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+
+                foreach ($files as $key => $file) {
+                    $imageName = time() . '_' . $key . '_' . $file->getClientOriginalName();
+                    $imagePath = 'images/articles/' . $imageName;
+                    $file->move(public_path('images/articles'), $imageName);
+                    $descriptionImagesArray[] = $imagePath;
+                }
+
+                $createArticle['description_image'] = json_encode($descriptionImagesArray);
+            } else {
+                $createArticle['description_image'] = json_encode([]);
+            }
+
+            $article = Article::create($createArticle);
+
+            return response()->json([
+                'message' => 'Article created successfully',
+                'article' => $article,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Article not created',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ], 400);
         }
-
-        $article = Article::create($createArticle);
-
-        return response()->json([
-            'message' => 'Article created successfully',
-            'article' => $article
-        ]);
     }
 
     // Update article
@@ -166,4 +198,3 @@ class ArticleController extends Controller
         ]);
     }
 }
-

@@ -38,7 +38,7 @@ Route::post('/user-details', [UserDetailsController::class, 'createUserDetails']
 
 // get all public articles
 Route::get('/articles/public', [ArticleController::class, 'getAllPublicArticles']);
-Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
+Route::get('/articles/public/{id}', [ArticleController::class, 'getArticleByPublicId']);
 
 // Events
 Route::get('/events', [EventController::class, 'getAllEvents']);
@@ -117,11 +117,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/announcements/{id}', [AnnouncementController::class, 'deleteAnnouncement']);
 
         // Articles
+        Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
         Route::post('/articles', [ArticleController::class, 'createArticle']);
         Route::put('/articles/{id}', [ArticleController::class, 'updateArticle']);
         Route::delete('/articles/{id}', [ArticleController::class, 'deleteArticle']);
 
-        // Categories   
+        // Categories
         Route::get('/categories', [CategoryController::class, 'getAllCategories']);
         Route::get('/categories/{id}', [CategoryController::class, 'getCategoryById']);
         Route::post('/categories', [CategoryController::class, 'createCategory']);

@@ -56,40 +56,25 @@ class UserDetailsController extends Controller
     {
         try {
             $createUserDetails = $request->all();
-        // if it has image file name nid_or_passport_image then store it in storage
-        if ($request->hasFile('nid_or_passport_image')) {
-            $file = $request->file('nid_or_passport_image');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/nid_or_passport'), $fileName);
-            $createUserDetails['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
-        }
 
-        if($request->hasFile('nid_or_passport_image_back')) {
-            $file = $request->file('nid_or_passport_image_back');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/nid_or_passport'), $fileName);
-            $createUserDetails['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
-        }
+            // if $request->user_id is not found in user table then return error
+            if (!$request->user_id) {
+                return response()->json([
+                    'message' => 'User not found. Please provide a valid user_id.'
+                ], 404);
+            }
 
-        
-        // if $request->user_id is not found in user table then return error
-        if(!$request->user_id) {
+            // json encode bird_species_collection and partners_details
+            $createUserDetails['bird_species_collection'] = json_encode($request->bird_species_collection);
+            $createUserDetails['partners_details'] = json_encode($request->partners_details);
+
+            // create user details
+            $userDetails = UserDetails::create($createUserDetails);
+
             return response()->json([
-                'message' => 'User not found. Please provide a valid user_id.'
-            ], 404);
-        }
-
-        // json encode bird_species_collection and partners_details
-        $createUserDetails['bird_species_collection'] = json_encode($request->bird_species_collection);
-        $createUserDetails['partners_details'] = json_encode($request->partners_details);
-
-        // create user details
-        $userDetails = UserDetails::create($createUserDetails);
-
-        return response()->json([
-            'message' => 'User details created successfully',
-            'userDetails' => $userDetails
-        ]);
+                'message' => 'User details created successfully',
+                'userDetails' => $userDetails
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'User details not created. Please provide all required fields.',
@@ -101,7 +86,7 @@ class UserDetailsController extends Controller
     // update user details by user_id
     public function updateUserDetails(Request $request, $user_id)
     {
-        $updtUserDetails = $request->all();
+        $updateUserDetails = $request->all();
         // get user details by user_id
         $userDetails = UserDetails::where('user_id', $user_id)->first();
 
@@ -111,36 +96,8 @@ class UserDetailsController extends Controller
             ], 404);
         }
 
-        // if it has image file name nid_or_passport_image then store it in storage
-        if ($request->hasFile('nid_or_passport_image')) {
-            $file = $request->file('nid_or_passport_image');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/nid_or_passport'), $fileName);
-            $updtUserDetails['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
-        }
-        
-        if($request->hasFile('nid_or_passport_image_back')) {
-            $file = $request->file('nid_or_passport_image_back');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/nid_or_passport'), $fileName);
-            $updtUserDetails['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
-        }
-
-        // delete old image if new image is uploaded
-        if ($request->hasFile('nid_or_passport_image')) {
-            if (file_exists(public_path("images/nid_or_passport/{$userDetails->nid_or_passport_image}"))) {
-                unlink(public_path("images/nid_or_passport/{$userDetails->nid_or_passport_image}"));
-            }
-        }
-
-        if ($request->hasFile('nid_or_passport_image_back')) {
-            if (file_exists(public_path("images/nid_or_passport/{$userDetails->nid_or_passport_image_back}"))) {
-                unlink(public_path("images/nid_or_passport/{$userDetails->nid_or_passport_image_back}"));
-            }
-        }
-
         // update user details
-        $userDetails->update($updtUserDetails);
+        $userDetails->update($updateUserDetails);
 
         return response()->json([
             'message' => 'User details updated successfully',
