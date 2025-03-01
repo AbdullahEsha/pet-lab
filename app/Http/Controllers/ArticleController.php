@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\DescriptionImage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -45,7 +46,8 @@ class ArticleController extends Controller
     // Get article by id
     public function getArticleById($id)
     {
-        $article = Article::find($id);
+        // Find article by id with description image relationship
+        $article = Article::with('descriptionImages')->find($id);
 
         if (!$article) {
             return response()->json([
@@ -62,7 +64,7 @@ class ArticleController extends Controller
     // Get article by public id
     public function getArticleByPublicId($id)
     {
-        $article = Article::where('id', $id)->first();
+        $article = Article::with('descriptionImages')->where('id', $id)->first();
 
         if (!$article) {
             return response()->json([
@@ -103,29 +105,22 @@ class ArticleController extends Controller
                 $createArticle['image'] = 'images/articles/' . $imageName;
             }
 
-            // Handle multiple images for description_image
-            if ($request->hasFile('description_image')) {
-                $descriptionImagesArray = [];
-                $files = $request->file('description_image');
-
-                // Ensure $files is always an array
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-
-                foreach ($files as $key => $file) {
-                    $imageName = time() . '_' . $key . '_' . $file->getClientOriginalName();
-                    $imagePath = 'images/articles/' . $imageName;
-                    $file->move(public_path('images/articles'), $imageName);
-                    $descriptionImagesArray[] = $imagePath;
-                }
-
-                $createArticle['description_image'] = json_encode($descriptionImagesArray);
-            } else {
-                $createArticle['description_image'] = json_encode([]);
-            }
-
+            // Create the article
             $article = Article::create($createArticle);
+
+            // Handle multiple description images upload
+            if ($request->hasFile('description_images')) {
+                foreach ($request->file('description_images') as $image) {
+                    $imageName = time() . '_' . $image->getClientOriginalName();
+                    $image->move(public_path('images/description_images'), $imageName);
+
+                    // Create a new DescriptionImage record
+                    DescriptionImage::create([
+                        'image' => 'images/description_images/' . $imageName,
+                        'article_id' => $article->id,
+                    ]);
+                }
+            }
 
             return response()->json([
                 'message' => 'Article created successfully',
@@ -189,6 +184,14 @@ class ArticleController extends Controller
         // delete the image
         if (file_exists(public_path($article->image))) {
             unlink(public_path($article->image));
+        }
+
+        // delete the description images
+        foreach ($article->descriptionImages as $descriptionImage) {
+            if (file_exists(public_path($descriptionImage->image))) {
+                unlink(public_path($descriptionImage->image));
+            }
+            $descriptionImage->delete();
         }
 
         $article->delete();
