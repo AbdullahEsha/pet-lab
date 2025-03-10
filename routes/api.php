@@ -84,12 +84,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // subscriptions update request
     Route::put('/subscriptions/{id}', [UserController::class, 'updateSubExpDate']);
+    Route::put('/users/{id}', [UserController::class, 'updateUser']);
 
     // middleware check expiry date
     Route::group(['middleware' => [CheckExpiryDate::class]], function () {
         // users
         Route::get('/users/{id}', [UserController::class, 'getUserById']);
-        Route::put('/users/{id}', [UserController::class, 'updateUser']);
 
         // user details
         Route::get('/user-details/{user_id}', [UserDetailsController::class, 'getUserDetailsByUserId']);
@@ -98,6 +98,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // Articles
         Route::get('/articles', [ArticleController::class, 'getAllArticles']);
         Route::get('/articles/category/{category}', [ArticleController::class, 'getArticlesByCategory']);
+        Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
     });
 
     // middleware auth as admin
@@ -117,7 +118,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/announcements/{id}', [AnnouncementController::class, 'deleteAnnouncement']);
 
         // Articles
-        Route::get('/articles/{id}', [ArticleController::class, 'getArticleById']);
         Route::post('/articles', [ArticleController::class, 'createArticle']);
         Route::put('/articles/{id}', [ArticleController::class, 'updateArticle']);
         Route::delete('/articles/{id}', [ArticleController::class, 'deleteArticle']);

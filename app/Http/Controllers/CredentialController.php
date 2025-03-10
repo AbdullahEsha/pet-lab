@@ -20,8 +20,23 @@ class CredentialController extends Controller
             $image->move(public_path('images/user'), $imageName);
             $registerUser['image'] = 'images/user/' . $imageName;
         }
+
+        if ($request->hasFile('nid_or_passport_image')) {
+            $file = $request->file('nid_or_passport_image');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $registerUser['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
+        }
+
+        if ($request->hasFile('nid_or_passport_image_back')) {
+            $file = $request->file('nid_or_passport_image_back');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/nid_or_passport'), $fileName);
+            $registerUser['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
+        }
+
         // hash the password
-        if(isset($registerUser['password'])){
+        if (isset($registerUser['password'])) {
             $registerUser['password'] = Hash::make($registerUser['password']);
         }
 

@@ -15,7 +15,7 @@ class ArticleController extends Controller
         $articles = Article::all();
         $articlesCount = $articles->count();
 
-        // if perams count=true then return only count of articles
+        // if prams count=true then return only count of articles
         if (request()->count) {
             return response()->json([
                 'message' => 'Articles count retrieved successfully',
@@ -97,6 +97,9 @@ class ArticleController extends Controller
         try {
             $createArticle = $request->all();
 
+            $description_images = $createArticle['description_images'];
+            unset($createArticle['description_images']);
+
             // Handle single image upload
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
@@ -105,33 +108,27 @@ class ArticleController extends Controller
                 $createArticle['image'] = 'images/articles/' . $imageName;
             }
 
-            // Create the article
             $article = Article::create($createArticle);
 
-            // Handle multiple description images upload
-            if ($request->hasFile('description_images')) {
-                foreach ($request->file('description_images') as $image) {
-                    $imageName = time() . '_' . $image->getClientOriginalName();
-                    $image->move(public_path('images/description_images'), $imageName);
-
-                    // Create a new DescriptionImage record
-                    DescriptionImage::create([
-                        'image' => 'images/description_images/' . $imageName,
-                        'article_id' => $article->id,
-                    ]);
-                }
+            // add article id to each description image
+            foreach ($description_images as $key => $description_image) {
+                $description_images[$key]['article_id'] = $article->id;
             }
+
+            $article = DescriptionImage::create([
+                'image' => "images/description_images/$imageName",
+                'article_id' => $article->id
+            ]);
 
             return response()->json([
                 'message' => 'Article created successfully',
-                'article' => $article,
+                'article' => $article
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Article not created',
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ], 400);
+                'message' => 'Article creation failed',
+                'error' => $e->getMessage()
+            ], 409);
         }
     }
 

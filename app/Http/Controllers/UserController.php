@@ -16,7 +16,7 @@ class UserController extends Controller
         $users = User::all();
         $usersCount = $users->count();
 
-        // if perams count=true then return only count of users
+        // if params count=true then return only count of users
         if (request()->count) {
             return response()->json([
                 'message' => 'Users count retrieved successfully',
@@ -90,74 +90,45 @@ class UserController extends Controller
 
     public function updateUser(Request $request, $id)
     {
-        $updateUser = $request->all();
+        $updateData = $request->all();
         $user = User::find($id);
 
-        // Check if the user exists
         if (!$user) {
             return response()->json([
                 'message' => 'User not found'
             ], 404);
         }
 
-        // Prevent normal users from updating admin details
-        if (Auth::user()->role !== 'admin' && $user->role === 'admin') {
-            return response()->json([
-                'message' => 'You are not authorized to update an admin\'s details'
-            ], 403);
-        }
-
-        // Check if the authenticated user is authorized to update this user
-        if (Auth::user()->role !== 'admin' && Auth::user()->id !== $user->id) {
-            return response()->json([
-                'message' => 'You are not authorized to update this user'
-            ], 403);
-        }
-
-        // upload image
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
-            $image->move(public_path('images/users'), $imageName);
-            $updateUser['image'] = 'images/users/' . $imageName;
-
-            // delete old image
-            if (file_exists(public_path($user->image))) {
-                unlink(public_path($user->image));
-            }
+            // update with file store
+            $image->store('images/users') ? $updateData['image'] = 'images/users/' . $imageName : null;
+            $updateData['image'] = 'images/users/' . $imageName;
         }
 
         if ($request->hasFile('nid_or_passport_image')) {
             $file = $request->file('nid_or_passport_image');
             $fileName = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('images/nid_or_passport'), $fileName);
-            $updateUser['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
-
-            // delete old image
-            if (file_exists(public_path($user->nid_or_passport_image))) {
-                unlink(public_path($user->nid_or_passport_image));
-            }
+            $updateData['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
         }
 
         if ($request->hasFile('nid_or_passport_image_back')) {
             $file = $request->file('nid_or_passport_image_back');
             $fileName = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('images/nid_or_passport'), $fileName);
-            $updateUser['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
-
-            // delete old image
-            if (file_exists(public_path($user->nid_or_passport_image_back))) {
-                unlink(public_path($user->nid_or_passport_image_back));
-            }
+            $updateData['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
         }
 
         // hash password
-        if (isset($updateUser['password'])) {
-            $updateUser['password'] = Hash::make($updateUser['password']);
+        if (isset($updateData['password'])) {
+            $updateData['password'] = Hash::make($updateData['password']);
         }
 
-        // Only update the fields that are present in the request body and ignore the rest
-        $user->update($updateUser);
+        // Update user data
+        $user->fill($updateData);
+        $user->save();
 
         return response()->json([
             'message' => 'User updated successfully',

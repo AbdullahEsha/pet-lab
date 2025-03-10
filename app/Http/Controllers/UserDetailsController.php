@@ -13,7 +13,7 @@ class UserDetailsController extends Controller
     public function getAllUserDetails()
     {
         // get all user and user details
-        // paginated with variable page size from perameter or default 10
+        // paginated with variable page size from parameter or default 10
         // user table id is the foreign key in user_details table as user_id
         $userDetails = UserDetails::with('user')->paginate(request('per_page', 10));
 
