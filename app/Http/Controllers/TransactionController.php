@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -65,12 +66,17 @@ class TransactionController extends Controller
             $createTransaction['image'] = 'images/transaction/' . $imageName;
         }
 
-        if(isset($createTransaction['user_id'])){
+        if (isset($createTransaction['user_id'])) {
             $createTransaction['user_id'] = $createTransaction['user_id'];
         }
-        
-        if(isset($createTransaction['participant_id'])){
+
+        if (isset($createTransaction['participant_id'])) {
             $createTransaction['participant_id'] = $createTransaction['participant_id'];
+        }
+
+        if (!isset($createTransaction['transaction_type']) === "bva") {
+            User::where('id', $createTransaction['user_id'])
+                ->update(['isBva' => true]);
         }
 
         $transaction = Transaction::create($createTransaction);

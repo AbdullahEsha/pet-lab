@@ -23,14 +23,14 @@ class CredentialController extends Controller
 
         if ($request->hasFile('nid_or_passport_image')) {
             $file = $request->file('nid_or_passport_image');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $fileName = time() . rand(1, 1000) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('images/nid_or_passport'), $fileName);
             $registerUser['nid_or_passport_image'] = 'images/nid_or_passport/' . $fileName;
         }
 
         if ($request->hasFile('nid_or_passport_image_back')) {
             $file = $request->file('nid_or_passport_image_back');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $fileName = time() . rand(1, 1000) . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('images/nid_or_passport'), $fileName);
             $registerUser['nid_or_passport_image_back'] = 'images/nid_or_passport/' . $fileName;
         }

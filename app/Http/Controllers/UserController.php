@@ -102,8 +102,7 @@ class UserController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
-            // update with file store
-            $image->store('images/users') ? $updateData['image'] = 'images/users/' . $imageName : null;
+            $image->move(public_path('images/users'), $imageName);
             $updateData['image'] = 'images/users/' . $imageName;
         }
 
