@@ -74,9 +74,12 @@ class TransactionController extends Controller
             $createTransaction['participant_id'] = $createTransaction['participant_id'];
         }
 
-        if (!isset($createTransaction['transaction_type']) === "bva") {
-            User::where('id', $createTransaction['user_id'])
-                ->update(['isBva' => true]);
+        if ($createTransaction['transaction_type'] === "bva") {
+            $user = User::find($createTransaction['user_id']);
+            if ($user) {
+                $user->isBva = true;
+                $user->save();
+            }
         }
 
         $transaction = Transaction::create($createTransaction);
