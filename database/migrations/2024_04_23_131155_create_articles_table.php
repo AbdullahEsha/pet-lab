@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('image')->nullable();
             $table->text('description');
+            $table->string('description_image')->nullable();
             $table->string('category');
             $table->string('sub_category');
             $table->boolean('is_public');

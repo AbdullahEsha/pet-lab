@@ -97,8 +97,8 @@ class ArticleController extends Controller
         try {
             $createArticle = $request->all();
 
-            $description_images = $createArticle['description_images'];
-            unset($createArticle['description_images']);
+            $description_image = $createArticle['description_image'];
+            unset($createArticle['description_image']);
 
             // Handle single image upload
             if ($request->hasFile('image')) {
@@ -111,12 +111,12 @@ class ArticleController extends Controller
             $article = Article::create($createArticle);
 
             // add article id to each description image
-            foreach ($description_images as $key => $description_image) {
-                $description_images[$key]['article_id'] = $article->id;
+            foreach ($description_image as $key => $description_image) {
+                $description_image[$key]['article_id'] = $article->id;
             }
 
             $article = DescriptionImage::create([
-                'image' => "images/description_images/$imageName",
+                'image' => "images/description_image/$imageName",
                 'article_id' => $article->id
             ]);
 

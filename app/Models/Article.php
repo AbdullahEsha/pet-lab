@@ -16,6 +16,7 @@ class Article extends Model
         'title',
         'image',
         'description',
+        'description_image',
         'category',
         'sub_category',
         'is_public',

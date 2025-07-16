@@ -74,7 +74,8 @@ class TransactionController extends Controller
             $createTransaction['participant_id'] = $createTransaction['participant_id'];
         }
 
-        if ($createTransaction['transaction_type'] === "bva") {
+        // $createTransaction['transaction_type'] make it lower case and contains "bva" inside string
+        if (isset($createTransaction['transaction_type']) && strpos(strtolower($createTransaction['transaction_type']), 'bva') !== false) {
             $user = User::find($createTransaction['user_id']);
             if ($user) {
                 $user->isBva = true;
