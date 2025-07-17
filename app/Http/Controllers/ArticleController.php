@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
-use App\Models\DescriptionImage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class ArticleController extends Controller
 {
@@ -47,7 +47,12 @@ class ArticleController extends Controller
     public function getArticleById($id)
     {
         // Find article by id with description image relationship
-        $article = Article::with('descriptionImages')->find($id);
+        $article = Article::find($id);
+
+        // discretion_image is a json array, so we need to decode it
+        if ($article && $article->description_image) {
+            $article->description_image = json_decode($article->description_image, true);
+        }
 
         if (!$article) {
             return response()->json([
@@ -64,7 +69,12 @@ class ArticleController extends Controller
     // Get article by public id
     public function getArticleByPublicId($id)
     {
-        $article = Article::with('descriptionImages')->where('id', $id)->first();
+        $article = Article::where('id', $id)->where('is_public', true)->first();
+
+        // discretion_image is a json array, so we need to decode it
+        if ($article && $article->description_image) {
+            $article->description_image = json_decode($article->description_image, true);
+        }
 
         if (!$article) {
             return response()->json([
@@ -97,28 +107,16 @@ class ArticleController extends Controller
         try {
             $createArticle = $request->all();
 
-            $description_image = $createArticle['description_image'];
-            unset($createArticle['description_image']);
-
-            // Handle single image upload
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . $image->getClientOriginalName();
                 $image->move(public_path('images/articles'), $imageName);
-                $createArticle['image'] = 'images/articles/' . $imageName;
+                $createArticle['image'] = 'images/article/' . $imageName;
+            } else {
+                $createArticle['image'] = null;
             }
 
             $article = Article::create($createArticle);
-
-            // add article id to each description image
-            foreach ($description_image as $key => $description_image) {
-                $description_image[$key]['article_id'] = $article->id;
-            }
-
-            $article = DescriptionImage::create([
-                'image' => "images/description_image/$imageName",
-                'article_id' => $article->id
-            ]);
 
             return response()->json([
                 'message' => 'Article created successfully',
@@ -146,21 +144,14 @@ class ArticleController extends Controller
             $updateArticle['image'] = 'images/article/' . $imageName;
         }
 
-        // and delete the old image
-        if (file_exists(public_path($article->image))) {
-            unlink(public_path($article->image));
-        }
-
         if (!$article) {
             return response()->json([
                 'message' => 'Article not found'
             ], 404);
         }
 
-        // Only update the fields that are present in the request body and ignore the rest
-        $article->fill($updateArticle);
-        $article->save();
-
+        // Update article
+        $article->update($updateArticle);
         return response()->json([
             'message' => 'Article updated successfully',
             'article' => $article
@@ -178,21 +169,8 @@ class ArticleController extends Controller
             ], 404);
         }
 
-        // delete the image
-        if (file_exists(public_path($article->image))) {
-            unlink(public_path($article->image));
-        }
-
-        // delete the description images
-        foreach ($article->descriptionImages as $descriptionImage) {
-            if (file_exists(public_path($descriptionImage->image))) {
-                unlink(public_path($descriptionImage->image));
-            }
-            $descriptionImage->delete();
-        }
-
+        // Delete article
         $article->delete();
-
         return response()->json([
             'message' => 'Article deleted successfully'
         ]);

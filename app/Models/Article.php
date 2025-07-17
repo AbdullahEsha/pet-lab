@@ -21,11 +21,4 @@ class Article extends Model
         'sub_category',
         'is_public',
     ];
-
-    // Define the relationship with the DescriptionImage model
-    // in the description_image table, the article_id column is used to store the id of the article that the image is associated with
-    public function descriptionImages()
-    {
-        return $this->hasMany(DescriptionImage::class);
-    }
 }
