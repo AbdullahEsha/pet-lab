@@ -111,7 +111,7 @@ class ArticleController extends Controller
                 $image = $request->file('image');
                 $imageName = time() . '_' . $image->getClientOriginalName();
                 $image->move(public_path('images/articles'), $imageName);
-                $createArticle['image'] = 'images/article/' . $imageName;
+                $createArticle['image'] = 'images/articles/' . $imageName;
             } else {
                 $createArticle['image'] = null;
             }
@@ -140,8 +140,8 @@ class ArticleController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = $image->getClientOriginalName();
-            $image->move(public_path('images/article'), $imageName);
-            $updateArticle['image'] = 'images/article/' . $imageName;
+            $image->move(public_path('images/articles'), $imageName);
+            $updateArticle['image'] = 'images/articles/' . $imageName;
         }
 
         if (!$article) {
